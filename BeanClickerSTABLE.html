@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bean Clicker!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles for the polished look */
+
+        :root {
+            /* Fall Guys Inspired Colors */
+            --fg-yellow: #ffeb3b; /* Bright Yellow */
+            --fg-pink: #e91e63;  /* Bright Pink */
+            --fg-blue: #2196f3;  /* Bright Blue */
+            --bg-dark: #1e3a8a;  /* Deep Blue/Purple background */
+            /* Scrollbar Colors */
+            --scroll-thumb: var(--fg-pink);
+            --scroll-track: #374151; /* Darker grey */
+            /* Rebirth Colors (New) */
+            --fg-rebirth: #00bcd4; /* Cyan/Teal for Rebirth */
+        }
+
+        /* --- BODY & CONTAINER --- */
+        body {
+            font-family: 'Titan One', cursive;
+            background-color: var(--bg-dark);
+            background-image: url('https://cdn2.unrealengine.com/evergreen-patternbackground-1920x1080-a7141a12bf8f.png?resize=1&w=1920');
+            background-repeat: no-repeat;
+            background-size: cover; 
+            background-attachment: fixed; 
+            transition: background-image 0.5s ease-in-out; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: auto;
+            color: white;
+            padding: 20px;
+            /* Disable Text Selection (Anti-Highlighting) */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+ */
+            user-select: none; /* Standard */
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--bg-dark); 
+            border: 4px solid var(--fg-pink);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* --- TITLE COLLAPSE FIX (New Styles for H1 Wrapper) --- */
+        .title-text-wrapper {
+            /* Set a generous max-width and initial spacing */
+            max-width: 500px; 
+            opacity: 1;
+            overflow: hidden;
+            margin-right: 1rem; 
+            /* Smooth transition for collapsing the space it takes */
+            transition: max-width 0.3s ease-in-out, opacity 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+            /* Ensure the H1 is centered within its wrapper */
+            display: flex; 
+            justify-content: center;
+        }
+
+        .title-text-collapsed {
+            max-width: 0 !important;
+            opacity: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        /* --- TITLE & TEXT --- */
+        .game-container h1 {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: var(--fg-yellow);
+            white-space: nowrap; /* Prevent wrapping during collapse */
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            color: var(--fg-yellow);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            line-height: 1;
+        }
+        .font-asap {
+            font-family: 'Asap', sans-serif;
+        }
+
+        /* --- CORE BEAN (RED/PINK) --- */
+        #aetherCore {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ff6e96 40%, #e91e63 80%, #d81b60 100%);
+            border: 4px solid var(--fg-yellow);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(233, 30, 99, 0.4); 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.1s ease-out;
+            margin: 20px auto;
+            position: relative;
+        }
+        #aetherCore:active {
+            transform: scale(0.95);
+        }
+        #aetherCore svg circle {
+            fill: #fff;
+            transition: fill 0.3s;
+        }
+        
+        /* --- Gift Box Styling (NEW) --- */
+        #giftBox {
+            position: absolute; /* Positioned relative to .core-section */
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 50; /* Above the core and controls */
+            transition: transform 0.1s ease-out, opacity 0.3s;
+            opacity: 0;
+            border-radius: 8px;
+            padding: 5px;
+            background-color: var(--fg-yellow);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        #giftBox:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        #giftBox:active {
+            transform: scale(0.95);
+        }
+
+        /* --- UTILITY ANIMATIONS & STYLING --- */
+        @keyframes popOff {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .pop-off {
+            animation: popOff 0.15s ease-out;
+        }
+        
+        /* Scrollbar Styling */
+        .scrollable-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        .scrollable-content::-webkit-scrollbar-track {
+            background: var(--scroll-track);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: var(--scroll-thumb);
+            border-radius: 10px;
+            border: 2px solid var(--bg-dark);
+            transition: background 0.2s;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: #ff4081;
+        }
+        .scrollable-content::-webkit-scrollbar-button {
+            display: none;
+        }
+        
+        /* --- Upgrade Card Styling (FIXED by removing transform) --- */
+        .upgrade-card {
+            background-color: #4b5563;
+            border: 1px solid var(--fg-blue);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upgrade-card:hover {
+            /* Animation removed as requested, leaving only the shadow effect */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+        }
+
+        .upgrade-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .upgrade-card .cost-btn {
+            background-color: var(--fg-pink);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: 700;
+            transition: background-color 0.2s;
+        }
+
+        .upgrade-card:not(.disabled) .cost-btn:hover {
+            background-color: #ff4081;
+        }
+
+        .upgrade-description {
+            font-family: 'Asap', sans-serif;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+        
+        /* --- Notification Styling (New) --- */
+        .notification-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--fg-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease-out, transform 0.3s ease-out;
+            font-family: 'Asap', sans-serif;
+            font-weight: bold;
+            border: 2px solid var(--fg-yellow);
+        }
+
+        .notification-box.fade-out {
+            opacity: 0;
+        }
+        
+        /* --- Modal Styling (New) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background-color: var(--bg-dark);
+            border: 4px solid var(--fg-rebirth);
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            font-family: 'Asap', sans-serif;
+        }
+
+        /* Layout for Mobile */
+        @media (max-width: 768px) {
+            .game-grid {
+                flex-direction: column;
+            }
+            .upgrade-section {
+                max-height: 350px;
+            }
+        }
+        /* Layout for Desktop/Large Screens */
+        @media (min-width: 768px) {
+            .upgrade-section {
+                max-height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        
+        <div class="flex items-center justify-center mb-6">
+            
+            <div id="titleTextWrapper" class="title-text-wrapper">
+                <h1 id="gameTitle" class="text-3xl md:text-4xl font-extrabold" style="color:var(--fg-yellow);">
+                    BEAN CLICKER
+                </h1>
+            </div>
+
+            <button id="titleToggleButton" class="p-2 rounded-full transition-colors duration-150 hover:bg-white/20 active:bg-white/30" 
+                    style="background-color: rgba(255, 255, 255, 0.1);"
+                    title="Toggle Title Visibility">
+                <svg id="eyeOpenIcon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <svg id="eyeClosedIcon" class="w-6 h-6 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7A9.957 9.957 0 0118 10"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a3 3 0 100-6 3 3 0 000 6z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-6 6"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16l-4 4"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 border-b border-t border-gray-700 py-3">
+            <div class="stat-display text-center col-span-2 md:col-span-1">
+                <div id="kudosCount" class="stat-value">0</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">CROWNS EARNED</div>
+            </div>
+            <div class="stat-display text-center">
+                <div id="clickPowerDisplay" class="stat-value">1</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">CROWNS PER PUNCH</div>
+            </div>
+            <div class="stat-display text-center">
+                <div id="passiveRateDisplay" class="stat-value">0</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">PASSIVE SLIME (C/sec)</div>
+            </div>
+             <div class="stat-display text-center">
+                <div id="rebirthMultiplierDisplay" class="stat-value" style="color:var(--fg-rebirth);"><span id="multiplierValue">x1.000</span></div>
+                <div class="stat-label text-sm text-gray-400 mt-1">REBIRTH MULTIPLIER</div>
+            </div>
+        </div>
+
+        <div class="game-grid flex flex-col md:flex-row gap-6">
+            
+            <div class="core-section md:w-1/2 flex flex-col items-center" style="position: relative;">
+                
+                <div id="giftBox" style="opacity: 0; display: none;">
+                    <img src="https://cdn-icons-png.freepik.com/512/6664/6664427.png" alt="Gift Icon" class="w-full h-full">
+                </div>
+
+                <div id="aetherCore" title="Click to Punch!">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-2/3 h-2/3">
+                        <circle cx="50" cy="50" r="48" fill="#fff"/>
+                        <ellipse cx="38" cy="45" rx="10" ry="15" fill="black"/>
+                        <ellipse cx="62" cy="45" rx="10" ry="15" fill="black"/>
+                    </svg>
+                    <div id="blockOverlay" class="hidden absolute inset-0 bg-black/80 rounded-full flex flex-col items-center justify-center text-red-500 text-center">
+                        <div class="text-6xl mb-1">X</div>
+                        <span id="countdownDisplay" class="font-bold">3.0s</span>
+                        <span class="text-xs font-asap mt-1">Auto-Click Detected</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-400 mt-2 font-asap">Punch the Cosmic Bean to manually generate Crowns.</p>
+                
+                <div class="control-panel mt-4 p-3 rounded-lg w-full max-w-xs flex flex-col items-center" 
+                     style="background-color: rgba(0,0,0,0.3); border: 2px solid var(--fg-yellow);">
+                    
+                    <div class="w-full mb-3 px-2">
+                        <label for="sfxVolumeSlider" class="text-sm text-white font-asap block mb-1">SFX Volume</label>
+                        <input type="range" id="sfxVolumeSlider" min="0" max="100" value="70" class="w-full">
+                    </div>
+
+                    <div class="w-full mb-3 px-2">
+                        <label for="bgmVolumeSlider" class="text-sm text-white font-asap block mb-1">BGM Volume</label>
+                        <input type="range" id="bgmVolumeSlider" min="0" max="100" value="40" class="w-full">
+                    </div>
+                    
+                    <button id="bgChangeButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-blue); color: white;">
+                        Change Background
+                    </button>
+                    
+                    <button id="rebirthButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4 font-extrabold" style="background-color: rgb(75 85 99); color: white;">
+                        MAX ALL UPGRADES (40 remaining)
+                    </button>
+                </div>
+            </div>
+
+            <div class="shop-section md:w-1/2 flex flex-col">
+                <h2 class="text-2xl font-bold mb-4" style="color:var(--fg-pink);">Shop!</h2>
+                <div id="upgradeList" class="scrollable-content upgrade-section pr-3 overflow-y-auto">
+                    </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-6">
+            <p class="text-xs text-gray-500 font-asap">
+                Version: Stable 0.1 | Made by: SamuelMK
+            </p>
+        </div>
+
+    </div>
+
+    <div id="rebirthModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-rebirth);">REBIRTH NOW!</h3>
+            <p class="text-white mb-4">
+                You are about to reset your Crowns, Upgrades, and Passive Rate in exchange for a permanent multiplier.
+            </p>
+            <div id="rebirthDetails" class="text-lg font-bold mb-6" style="color:var(--fg-yellow);">
+                </div>
+            <div class="flex justify-around">
+                <button id="confirmRebirth" class="cost-btn px-6 py-2 text-white font-bold rounded-md" style="background-color: var(--fg-rebirth);">
+                    Confirm Reset
+                </button>
+                <button id="cancelRebirth" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://lambda.vgmtreasurechest.com/soundtracks/fall-guys-fallin-forever-ost-gamerip-2024/hgizwlry/02.%20Chill%20Your%20Beans%20%28Fallin%20Friends%29.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div id="devConsole" class="modal-overlay hidden" style="z-index: 3000;">
+        <div class="modal-content w-11/12 max-w-lg" style="border: 4px solid var(--fg-yellow);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-yellow);">Developer Console</h3>
+            
+            <div class="mb-4 text-left p-3 rounded" style="background-color: #374151;">
+                <p class="text-sm text-gray-400 font-asap mb-2">Current Crowns: <span id="consoleKudos" class="text-white font-bold">0</span></p>
+                <p class="text-sm text-gray-400 font-asap">Press <kbd class="px-1 py-0.5 rounded bg-gray-600 text-white">Alt + \</> to toggle.</p>
+            </div>
+
+            <div class="control-group mb-4">
+                <label for="crownsInput" class="block text-white text-sm font-asap mb-2 text-left">Add Crowns (Kudos)</label>
+                <input type="number" id="crownsInput" placeholder="Enter amount (e.g., 1000000)" class="w-full p-2 rounded text-black font-asap" min="1" value="1000000">
+            </div>
+
+            <button id="addCrownsButton" class="cost-btn px-6 py-2 text-white font-bold rounded-md w-full" style="background-color: var(--fg-pink);">
+                Execute: Add Crowns
+            </button>
+            
+            <button id="spawnGiftButton" class="cost-btn px-6 py-2 text-white font-bold rounded-md w-full mt-3" style="background-color: var(--fg-blue);">
+                Execute: Spawn Gift Box
+            </button>
+
+        </div>
+    </div>
+
+
+    <script>
+        // Tone.js library for sound effects and music
+        const TONE_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js";
+        
+        // --- GAME VARIABLES & STATE ---
+        let kudos = 0; 
+        let totalKudosEarned = 0; // Tracks crowns ever earned (for historical stats, not used for multiplier anymore)
+        let clickPower = 1;
+        let passiveRate = 0;
+        let upgrades = {};
+        let isToneLoaded = false;
+        
+        // REBIRTH VARIABLES (FIXED/UPDATED)
+        let rebirthCount = 0;
+        let rebirthMultiplier = 1; // Base multiplier for clickPower
+        
+        // Rebirth Logic Constants (FIXED TO 100% BASE MULTIPLIER)
+        const REBIRTH_MULTIPLIER_BASE = 1.0; // +100% (x1.0) permanent bonus per Rebirth
+        
+        // Console State (RE-ADDED)
+        let isConsoleOpen = false;
+
+        // Tone.js Components
+        let clickSynth, upgradeSynth, synthFail, titleToggleSynth, rebirthSynth, sfxVolume; 
+
+        // New Crown Image Constant and HTML for display
+        const CROWN_ICON_URL = "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/2/26/Crown_Decoration.png/revision/latest/thumbnail/width/360/height/450?cb=20250730001833";
+        // Using a placeholder image with 'C' text as a fallback
+        const CROWN_ICON_HTML = `<img src="${CROWN_ICON_URL}" alt="Crown" class="w-4 h-4 inline ml-1 mr-1" onerror="this.onerror=null; this.src='https://placehold.co/16x16/ffeb3b/1e3a8a?text=C'">`;
+
+        // Background Control Variables - Array of objects with URL and Name (Updated)
+        const backgroundData = [
+            { name: "EverGreen", url: "https://cdn2.unrealengine.com/evergreen-patternbackground-1920x1080-a7141a12bf8f.png?resize=1&w=1920" }, 
+            { name: "Bean Hill Zone", url: "https://i.redd.it/3hngyakrrxtc1.png" },  
+            { name: "Yeetropolis", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/a/a2/Yeetropolis_%28Background%29.png/revision/latest/scale-to-width-down/250?cb=20250527155622" }, 
+            { name: "Ocean", url: "https://i.redd.it/fall-guys-background-themes-part-2-perfect-for-your-own-v0-qpvwwxsom1wc1.png?width=1365&format=png&auto=webp&s=36c3665c0296692a05916d37ef867baecd1e6a5d" }, 
+            { name: "Digital", url: "https://i.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-cru9imgfvutc1.png?width=1365&format=png&auto=webp&s=a70e7191c68a8c81637ee4223c14caffc2b07b03" }, 
+			{ name: "Scrapyard", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/7/78/Scrapyard_%28Background%29.jpg/revision/latest/scale-to-width-down/1000?cb=20251105090247" },
+			{ name: "Midnight", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/0/07/Midnight_%28Background%29.jpg/revision/latest/scale-to-width-down/1000?cb=20250407095956" }
+        ];
+        let currentBgIndex = 0;
+        const bodyElement = document.body;
+
+        // Anti-Cheat Variables 
+        const CLICK_THRESHOLD_MS = 50; 
+        const CLICK_BLOCK_DURATION_MS = 3000;
+        let lastClickTimestamps = [];
+        let isClickingBlocked = false;
+
+        // --- GIFT BOX VARIABLES ---
+        const MIN_GIFT_CROWNS = 1000;
+        const MAX_GIFT_CROWNS = 100000;
+        const MIN_SPAWN_DELAY_S = 15; // 15 seconds
+        const MAX_SPAWN_DELAY_S = 45; // 45 seconds
+        let giftSpawnTimeout; 
+
+        // Upgrades 
+        const upgradeData = {
+            'wobbly_arms': { name: "Wobbly Arms Training", type: 'click', baseCost: 10, costMultiplier: 1.5, effect: 1, description: "Better core stability for more consistent Crown punches.", level: 0, maxLevel: 10 },
+            'slime_scrapper': { name: "Slime Scraper Drones", type: 'passive', baseCost: 100, costMultiplier: 2.0, effect: 0.1, description: "Automated drones salvage Crowns left on the Slime Climb floor.", level: 0, maxLevel: 10 },
+            'grab_training': { name: "Aggressive Grab Technique", type: 'click', baseCost: 1000, costMultiplier: 1.8, effect: 10, description: "Focus your bean-punching power for a massive click boost.", level: 0, maxLevel: 5 },
+            'fan_boost': { name: "Big Fans Energy", type: 'passive', baseCost: 5000, costMultiplier: 2.5, effect: 1, description: "A constant flow of wind pushes more Crowns toward you every second.", level: 0, maxLevel: 5 },
+        };
+        
+        // Calculate total max levels once
+        const UPGRADE_KEYS = Object.keys(upgradeData);
+        let TOTAL_MAX_LEVELS = 0;
+        for (const key of UPGRADE_KEYS) {
+            TOTAL_MAX_LEVELS += upgradeData[key].maxLevel;
+        }
+
+        // --- DOM ELEMENTS ---
+        const aetherCore = document.getElementById('aetherCore');
+        const kudosCountDisplay = document.getElementById('kudosCount');
+        const clickPowerDisplay = document.getElementById('clickPowerDisplay');
+        const passiveRateDisplay = document.getElementById('passiveRateDisplay');
+        const upgradeList = document.getElementById('upgradeList');
+        const sfxVolumeSlider = document.getElementById('sfxVolumeSlider');
+        const bgChangeButton = document.getElementById('bgChangeButton');
+        const blockOverlay = document.getElementById('blockOverlay'); 
+        const countdownDisplay = document.getElementById('countdownDisplay'); 
+        const gameTitle = document.getElementById('gameTitle');
+        const titleToggleButton = document.getElementById('titleToggleButton');
+        const eyeOpenIcon = document.getElementById('eyeOpenIcon');
+        const eyeClosedIcon = document.getElementById('eyeClosedIcon');
+        const titleTextWrapper = document.getElementById('titleTextWrapper');
+        const giftBox = document.getElementById('giftBox'); 
+        const rebirthButton = document.getElementById('rebirthButton'); 
+        const rebirthModal = document.getElementById('rebirthModal'); 
+        const confirmRebirth = document.getElementById('confirmRebirth'); 
+        const cancelRebirth = document.getElementById('cancelRebirth'); 
+        const rebirthDetails = document.getElementById('rebirthDetails'); 
+        const multiplierValueDisplay = document.getElementById('multiplierValue'); 
+
+        // --- BGM ELEMENTS ---
+        const bgMusic = document.getElementById('bgMusic'); 
+        const bgmVolumeSlider = document.getElementById('bgmVolumeSlider');
+
+        // Console Elements (RE-ADDED)
+        const devConsole = document.getElementById('devConsole');
+        const consoleKudosDisplay = document.getElementById('consoleKudos');
+        const crownsInput = document.getElementById('crownsInput');
+        const addCrownsButton = document.getElementById('addCrownsButton');
+        const spawnGiftButton = document.getElementById('spawnGiftButton'); // NEW ELEMENT
+        // --- UTILITY FUNCTIONS ---
+
+        function formatNumber(num) {
+            if (num === null || num === undefined) return "0";
+            if (num < 1000) return num.toFixed(0);
+            const suffixes = ["", "K", "M", "B", "T", "Qa", "Qi"];
+            let suffixNum = 0;
+            while (num >= 1000) {
+                num /= 1000;
+                suffixNum++;
+            }
+            return num.toFixed(1) + suffixes[suffixNum];
+        }
+        
+        // --- SAVE/LOAD FUNCTIONS ---
+
+        function saveGame() {
+            const saveObject = {
+                kudos: kudos,
+                totalKudosEarned: totalKudosEarned,
+                upgrades: upgrades,
+                rebirthCount: rebirthCount,
+                rebirthMultiplier: rebirthMultiplier
+            };
+            localStorage.setItem('beanClickerSave', JSON.stringify(saveObject));
+        }
+
+        function loadGame() {
+            const savedData = localStorage.getItem('beanClickerSave');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                kudos = data.kudos || 0;
+                totalKudosEarned = data.totalKudosEarned || 0;
+                // Ensure rebirth state loads correctly with defaults
+                rebirthCount = data.rebirthCount || 0;
+                rebirthMultiplier = data.rebirthMultiplier || 1;
+                
+                // Initialize/overwrite upgrades from saved data
+                const loadedUpgrades = data.upgrades || {};
+                for (const id in upgradeData) {
+                    // Use saved level, default to 0 if not present
+                    upgrades[id] = loadedUpgrades[id] !== undefined ? loadedUpgrades[id] : 0;
+                }
+                
+                recalculateStats();
+                updateDisplay();
+                showNotification("Game Loaded!", 1500);
+            } else {
+                // Initialize default upgrade levels if no save found
+                for (const id in upgradeData) {
+                    upgrades[id] = 0;
+                }
+                recalculateStats();
+                updateDisplay();
+            }
+        }
+
+        // --- TONE.JS SOUND FX IMPLEMENTATION ---
+        
+        function initTone() {
+            if (typeof Tone === 'undefined') {
+                console.error("Tone.js failed to load. Sound effects disabled.");
+                return;
+            }
+            
+            try {
+                // 1. Volumes and Master Connection
+                sfxVolume = new Tone.Volume(sfxVolumeSlider.value * 0.6 - 60).toDestination();
+                
+                // 2. Synths
+                clickSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "square" },
+                    envelope: { attack: 0.001, decay: 0.05, sustain: 0.0, release: 0.1 }
+                }).connect(sfxVolume);
+                
+                upgradeSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle" },
+                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.3 }
+                }).connect(sfxVolume);
+
+                synthFail = new Tone.NoiseSynth({
+                    noise: { type: "pink" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+                }).connect(sfxVolume);
+
+                titleToggleSynth = new Tone.Synth({
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+                }).connect(sfxVolume);
+                
+                 rebirthSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.05,
+                    octaves: 10,
+                    envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1 }
+                }).connect(sfxVolume);
+
+
+                isToneLoaded = true;
+                console.log("Audio synths loaded successfully.");
+
+            } catch (e) {
+                console.error("Error initializing Tone.js components:", e);
+                isToneLoaded = false;
+                // Mock Tone objects for error prevention
+                sfxVolume = { volume: { value: 0 } };
+                clickSynth = { triggerAttackRelease: (f, d) => {} };
+                upgradeSynth = { triggerAttackRelease: (f, d) => {} };
+                synthFail = { triggerAttackRelease: (f, d) => {} };
+                titleToggleSynth = { triggerAttackRelease: (f, d) => {} };
+                rebirthSynth = { triggerAttackRelease: (f, d) => {} };
+            }
+        }
+
+        function setSfxVolume(value) { 
+            if (sfxVolume) {
+                // Convert 0-100 range to Tone's dB range (-60dB to 0dB)
+                const db = value == 0 ? -100 : value * 0.6 - 60;
+                sfxVolume.volume.value = db;
+            }
+        }
+
+        // --- BGM VOLUME FUNCTION ---
+        function setBgmVolume(value) {
+            if (bgMusic) {
+                // Convert 0-100 range to 0.0-1.0
+                bgMusic.volume = value / 100;
+            }
+        }
+
+        // --- NOTIFICATION SYSTEM (Updated Message Format) ---
+
+        /**
+         * Displays a temporary notification message that fades out.
+         * @param {string} message The text to display.
+         * @param {number} durationMs The time in milliseconds before fade-out starts.
+         */
+        function showNotification(message, durationMs = 3000) {
+            // Remove any existing notification before creating a new one
+            document.querySelectorAll('.notification-box').forEach(el => el.remove());
+
+            const box = document.createElement('div');
+            box.classList.add('notification-box', 'animate-pulse'); 
+            box.innerHTML = `<p class="text-sm md:text-base">${message}</p>`;
+
+            document.body.appendChild(box);
+
+            // Schedule the fade-out after the duration
+            setTimeout(() => {
+                box.classList.add('fade-out');
+                // Schedule removal after fade-out transition completes (0.5s from CSS)
+                setTimeout(() => box.remove(), 500); 
+            }, durationMs);
+        }
+
+        // --- BACKGROUND CHANGER LOGIC ---
+        function cycleBackground() {
+            currentBgIndex = (currentBgIndex + 1) % backgroundData.length;
+            const newBg = backgroundData[currentBgIndex];
+            
+            // 1. Change the background image URL
+            bodyElement.style.backgroundImage = `url('${newBg.url}')`;
+
+            // 2. Show the notification with the new format
+            showNotification(`Changed Background To ${newBg.name} Successfully!`, 3000);
+        }
+
+        // --- TITLE TOGGLE FIX ---
+        function toggleTitleVisibility() {
+            // 1. Toggle the collapse class on the H1's wrapper
+            titleTextWrapper.classList.toggle('title-text-collapsed');
+            
+            // 2. Icon logic flips based on the new state
+            const isNowHidden = titleTextWrapper.classList.contains('title-text-collapsed');
+
+            if (isNowHidden) {
+                // Title is now HIDDEN (collapsed) -> Show Closed Eye
+                eyeOpenIcon.classList.add('hidden');
+                eyeClosedIcon.classList.remove('hidden');
+                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("C4", "8n"); // Low note for hiding
+            } else {
+                // Title is now VISIBLE (expanded) -> Show Open Eye
+                eyeOpenIcon.classList.remove('hidden');
+                eyeClosedIcon.classList.add('hidden');
+                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("G4", "8n"); // High note for showing
+            }
+        }
+
+        // --- ANTI-CHEATING LOGIC ---
+        function handleAutoclickerDetection() { 
+            // Add current timestamp to the array
+            const now = performance.now();
+            lastClickTimestamps.push(now);
+
+            // Remove timestamps older than 1 second (1000ms)
+            lastClickTimestamps = lastClickTimestamps.filter(timestamp => now - timestamp < 1000);
+
+            // Check if we have too many clicks in the last second
+            const clickCount = lastClickTimestamps.length;
+            if (clickCount > (1000 / CLICK_THRESHOLD_MS) + 1) { // More than ~21 clicks/second
+                if (!isClickingBlocked) {
+                    isClickingBlocked = true;
+                    blockOverlay.classList.remove('hidden');
+                    
+                    // Play fail sound if blocked, for user feedback
+                    if (isToneLoaded) {
+                        try {
+                            // Play a sharp noise for blocked action
+                            synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
+                        } catch (e) { console.error("Tone error on blocked click:", e); }
+                    }
+
+                    let timeLeft = CLICK_BLOCK_DURATION_MS / 1000;
+                    countdownDisplay.textContent = `${timeLeft.toFixed(1)}s`;
+                    
+                    const blockInterval = setInterval(() => {
+                        timeLeft -= 0.1;
+                        countdownDisplay.textContent = `${timeLeft.toFixed(1)}s`;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(blockInterval);
+                            isClickingBlocked = false;
+                            lastClickTimestamps = []; // Clear history
+                            blockOverlay.classList.add('hidden');
+                        }
+                    }, 100);
+                }
+            }
+        }
+
+        // --- GIFT BOX LOGIC ---
+
+        function scheduleNextGiftSpawn() {
+            clearTimeout(giftSpawnTimeout);
+
+            // Calculate a random delay between MIN and MAX seconds
+            const delayMs = Math.random() * (MAX_SPAWN_DELAY_S - MIN_SPAWN_DELAY_S) * 1000 + MIN_SPAWN_DELAY_S * 1000;
+
+            giftSpawnTimeout = setTimeout(spawnGiftBox, delayMs);
+        }
+
+        function spawnGiftBox() {
+            if (giftBox.style.opacity === '1') {
+                scheduleNextGiftSpawn(); 
+                return;
+            }
+            
+            const container = document.querySelector('.core-section');
+            if (!container.clientWidth || !container.clientHeight) {
+                scheduleNextGiftSpawn(); 
+                return;
+            }
+
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            const boxSize = 50; 
+            const padding = 20;
+
+            const randomX = Math.random() * (containerWidth - boxSize - 2 * padding) + padding;
+            const randomY = Math.random() * (containerHeight - boxSize - 2 * padding) + padding;
+
+            giftBox.style.left = `${randomX}px`;
+            giftBox.style.top = `${randomY}px`;
+            
+            giftBox.style.display = 'block';
+            setTimeout(() => { giftBox.style.opacity = '1'; }, 50); 
+
+            scheduleNextGiftSpawn();
+            
+            if (isToneLoaded) {
+                try {
+                    clickSynth.triggerAttackRelease(["A5", "C6"], "16n", Tone.now());
+                    clickSynth.triggerAttackRelease(["D6"], "16n", Tone.now() + 0.1);
+                } catch (e) { console.error("Tone error on gift spawn:", e); }
+            }
+        }
+
+        function collectGift() {
+            if (giftBox.style.opacity !== '1') return;
+
+            giftBox.style.opacity = '0';
+            setTimeout(() => { giftBox.style.display = 'none'; }, 300); 
+
+            const randomCrowns = Math.floor(Math.random() * (MAX_GIFT_CROWNS - MIN_GIFT_CROWNS + 1)) + MIN_GIFT_CROWNS;
+            
+            kudos += randomCrowns;
+            totalKudosEarned += randomCrowns; 
+            updateDisplay();
+            saveGame(); 
+
+            showNotification(`🎁 MEGA BONUS! +${formatNumber(randomCrowns)} Crowns collected!`, 4000);
+
+            if (isToneLoaded) {
+                try {
+                    upgradeSynth.triggerAttackRelease(["C6", "E6", "G6"], "4n"); 
+                } catch (e) { console.error("Tone error on gift collect:", e); }
+            }
+        }
+
+        // --- GAME LOGIC FUNCTIONS ---
+
+        function createClickText(amount) {
+            const finalAmount = amount; 
+
+            const text = document.createElement('div');
+            text.innerHTML = `+${formatNumber(finalAmount)} ${CROWN_ICON_HTML}`; 
+            text.classList.add('absolute', 'text-xl', 'font-bold', 'pointer-events-none', 'animate-pulse', 'flex', 'items-center');
+            text.style.color = '#fff'; 
+            
+            const coreRect = aetherCore.getBoundingClientRect();
+            const startX = coreRect.left + coreRect.width / 2;
+            const startY = coreRect.top + coreRect.height / 2;
+            
+            const offsetX = (Math.random() - 0.5) * 50;
+            const offsetY = (Math.random() - 0.5) * 50;
+
+            text.style.left = `${startX + offsetX}px`;
+            text.style.top = `${startY + offsetY}px`;
+            text.style.transition = 'all 1s ease-out';
+            text.style.opacity = '1';
+
+            document.body.appendChild(text);
+
+            setTimeout(() => {
+                text.style.transform = `translateY(-50px)`;
+                text.style.opacity = '0';
+            }, 10); 
+
+            setTimeout(() => {
+                text.remove();
+            }, 1000); 
+
+            return finalAmount;
+        }
+
+        function harvestAether() {
+            if (isClickingBlocked) {
+                return; 
+            }
+            
+            handleAutoclickerDetection();
+
+            // *** Add Click Sound SFX (FIX) ***
+            if (isToneLoaded) {
+                try {
+                    clickSynth.triggerAttackRelease("C5", "32n");
+                } catch (e) { console.error("Tone error on click:", e); }
+            }
+            // ***************************
+
+            const effectiveAmount = clickPower; 
+            kudos += effectiveAmount; 
+            totalKudosEarned += effectiveAmount; 
+            
+            createClickText(effectiveAmount); 
+            updateDisplay();
+        }
+
+        function calculateCost(upgradeId, level) {
+            const data = upgradeData[upgradeId];
+            return Math.floor(data.baseCost * Math.pow(data.costMultiplier, level));
+        }
+
+        function buyUpgrade(upgradeId) {
+            const data = upgradeData[upgradeId];
+            const currentLevel = upgrades[upgradeId];
+            
+            if (currentLevel >= data.maxLevel) {
+                showNotification(`${data.name} is already at Max Level (${data.maxLevel})!`, 2000);
+                return;
+            }
+
+            const cost = calculateCost(upgradeId, currentLevel);
+
+            if (kudos >= cost) {
+                kudos -= cost; 
+                upgrades[upgradeId]++;
+
+                if (isToneLoaded) {
+                    try {
+                        upgradeSynth.triggerAttackRelease(["G4", "C5", "E5"], "4n");
+                    } catch (e) { console.error("Tone error on upgrade:", e); }
+                }
+
+                recalculateStats();
+                updateDisplay();
+                saveGame(); 
+            } else {
+                if (isToneLoaded) {
+                    try {
+                        synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
+                    } catch (e) { console.error("Tone error on fail:", e); }
+                }
+                showNotification(`Not enough Crowns to purchase ${data.name}!`, 2000);
+            }
+        }
+        
+        // --- REBIRTH LOGIC (UPDATED) ---
+        
+        // Function to count the sum of all current upgrade levels
+        function countTotalUpgradeLevels() {
+            let total = 0;
+            for (const id in upgrades) {
+                total += upgrades[id];
+            }
+            return total;
+        }
+
+        // Function to check if all upgrades are at max level (The Rebirth Condition)
+        function checkRebirthCondition() {
+            for (const id in upgradeData) {
+                if (upgrades[id] < upgradeData[id].maxLevel) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function calculateRebirthBonus() {
+            // New multiplier is based on current rebirth count
+            // Formula: 1 + (1.0 * (rebirthCount + 1))
+            const nextRebirthMultiplier = 1 + (REBIRTH_MULTIPLIER_BASE * (rebirthCount + 1));
+            const multiplierIncrease = nextRebirthMultiplier - rebirthMultiplier;
+
+            return {
+                nextRebirthMultiplier: parseFloat(nextRebirthMultiplier.toFixed(3)),
+                multiplierIncrease: parseFloat(multiplierIncrease.toFixed(3))
+            };
+        }
+        
+        function showRebirthModal() {
+            const isConditionMet = checkRebirthCondition();
+            
+            if (!isConditionMet) {
+                const totalCurrentLevels = countTotalUpgradeLevels();
+                const remainingLevels = TOTAL_MAX_LEVELS - totalCurrentLevels;
+                showNotification(`You must purchase all upgrades to max level. ${remainingLevels} levels remaining!`, 4000);
+                return;
+            }
+
+            const { nextRebirthMultiplier, multiplierIncrease } = calculateRebirthBonus();
+            
+            // Set modal details
+            rebirthDetails.innerHTML = `
+                <p>Rebirth Count: **#${rebirthCount}**</p>
+                <p>Current Multiplier: **x${rebirthMultiplier.toFixed(3)}**</p>
+                <p class="mt-2 mb-2">After reset, your new permanent multiplier will be:</p>
+                <p class="text-xl font-extrabold" style="color:var(--fg-rebirth);">
+                    **x${nextRebirthMultiplier.toFixed(3)}**
+                </p>
+                <p class="mt-1 text-sm text-gray-400">
+                    (A permanent **+${(multiplierIncrease * 100).toFixed(1)}%** boost to Click Power)
+                </p>
+            `;
+            
+            // Show the modal
+            rebirthModal.classList.remove('hidden');
+        }
+        
+        function performRebirth() {
+            if (!checkRebirthCondition()) {
+                showNotification("Rebirth failed: Not all upgrades are maxed out!", 3000);
+                rebirthModal.classList.add('hidden');
+                return;
+            }
+            
+            const { nextRebirthMultiplier } = calculateRebirthBonus();
+            
+            // 1. Apply the new permanent multiplier
+            rebirthMultiplier = nextRebirthMultiplier;
+            rebirthCount++;
+            
+            // 2. Reset temporary stats
+            kudos = 0;
+            // totalKudosEarned is NOT reset
+            
+            // 3. Reset upgrades
+            for (const id in upgradeData) {
+                upgrades[id] = 0;
+            }
+            
+            // 4. Recalculate stats with the new multiplier
+            recalculateStats();
+            updateDisplay();
+            saveGame();
+            
+            // 5. Play sound and hide modal
+            if (isToneLoaded) {
+                 try {
+                     rebirthSynth.triggerAttackRelease("C2", "2n");
+                     rebirthSynth.triggerAttackRelease("G2", "2n", Tone.now() + 0.1);
+                 } catch (e) { console.error("Tone error on rebirth:", e); }
+            }
+            rebirthModal.classList.add('hidden');
+            showNotification(`CORE RESET SUCCESS! Rebirth #${rebirthCount}. New Multiplier: x${rebirthMultiplier.toFixed(3)}`, 5000);
+        }
+
+        function recalculateStats() {
+            let baseClickPower = 1;
+            passiveRate = 0; 
+
+            for (const id in upgradeData) {
+                const data = upgradeData[id];
+                const level = upgrades[id];
+
+                if (data.type === 'click') {
+                    baseClickPower += data.effect * level;
+                } else if (data.type === 'passive') {
+                    passiveRate += data.effect * level;
+                }
+            }
+            
+            // Apply permanent multiplier to click power, keeping 0 decimal points for click power
+            clickPower = Math.round(baseClickPower * rebirthMultiplier);
+        }
+
+        function updateRebirthButtonState() {
+            const isReady = checkRebirthCondition();
+            const button = document.getElementById('rebirthButton');
+            const totalCurrentLevels = countTotalUpgradeLevels();
+            const remainingLevels = TOTAL_MAX_LEVELS - totalCurrentLevels;
+
+            if (isReady) {
+                button.style.backgroundColor = 'var(--fg-rebirth)';
+                button.style.color = 'black';
+                button.style.boxShadow = '0 0 15px var(--fg-rebirth)';
+                // UPDATED TEXT HERE
+                button.textContent = "REBIRTH NOW! (READY!)"; 
+            } else {
+                button.style.backgroundColor = 'rgb(75 85 99)'; // Tailwind gray-600
+                button.style.color = 'white';
+                button.style.boxShadow = 'none';
+                button.textContent = `MAX ALL UPGRADES (${remainingLevels} remaining)`;
+            }
+        }
+
+
+        function updateDisplay() {
+            kudosCountDisplay.textContent = formatNumber(Math.floor(kudos)); 
+            clickPowerDisplay.textContent = formatNumber(clickPower);
+            passiveRateDisplay.textContent = formatNumber(passiveRate); 
+            // Show multiplier with 3 decimal points to highlight progression
+            multiplierValueDisplay.textContent = `x${rebirthMultiplier.toFixed(3)}`; 
+
+            renderUpgradeCards();
+            updateRebirthButtonState(); // Update the button state on every display update
+            
+            // Update console display if open (RE-ADDED)
+            if (isConsoleOpen) {
+                consoleKudosDisplay.textContent = formatNumber(Math.floor(kudos));
+            }
+        }
+
+        function renderUpgradeCards() {
+            upgradeList.innerHTML = '';
+            for (const id in upgradeData) {
+                const data = upgradeData[id];
+                const level = upgrades[id];
+                const isMaxLevel = level >= data.maxLevel;
+                const cost = isMaxLevel ? "MAX" : calculateCost(id, level);
+                const canAfford = !isMaxLevel && kudos >= calculateCost(id, level); 
+
+                const card = document.createElement('div');
+                card.classList.add('upgrade-card', 'flex', 'justify-between', 'items-center');
+                if (!canAfford) {
+                    card.classList.add('disabled');
+                }
+
+                const cardColor = data.type === 'click' ? 'var(--fg-blue)' : 'var(--fg-pink)';
+                const btnColor = data.type === 'click' ? 'var(--fg-pink)' : 'var(--fg-yellow)';
+                const btnTextColor = data.type === 'click' ? 'white' : 'var(--bg-dark)';
+                const levelText = isMaxLevel ? 'MAX' : `Lv. ${level}/${data.maxLevel}`;
+                
+                const effectUnit = data.type === 'click' ? 'Click' : 'C/s';
+
+
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-lg font-bold flex items-center" style="color: ${cardColor};">
+                            ${data.name} <span class="ml-2 text-xs font-normal text-white font-asap">(${levelText})</span>
+                        </div>
+                        <p class="upgrade-description mt-1">${data.description}</p>
+                        <p class="text-sm mt-1 font-asap" style="color: ${cardColor};">
+                            Effect: +${data.effect} ${effectUnit}
+                        </p>
+                    </div>
+                    <button id="btn-${id}" class="cost-btn ml-4 flex flex-col items-center justify-center text-sm" 
+                            style="background-color: ${btnColor}; color: ${btnTextColor};" 
+                            ${!isMaxLevel && !canAfford ? 'disabled' : ''}>
+                        ${isMaxLevel ? `<span>MAXED</span>` : `<span class="flex items-center">${formatNumber(cost)} ${CROWN_ICON_HTML}</span>`}
+                    </button>
+                `;
+
+                if (!isMaxLevel) {
+                    card.addEventListener('click', () => {
+                        buyUpgrade(id);
+                    });
+                } else {
+                    card.classList.add('cursor-default');
+                }
+
+                upgradeList.appendChild(card);
+            }
+        }
+        
+        // --- CONSOLE LOGIC (RE-ADDED) ---
+        
+        function toggleDevConsole() {
+            isConsoleOpen = !isConsoleOpen;
+            if (isConsoleOpen) {
+                // Update current kudos display and show console
+                consoleKudosDisplay.textContent = formatNumber(Math.floor(kudos));
+                devConsole.classList.remove('hidden');
+                crownsInput.focus(); // Focus the input field
+            } else {
+                devConsole.classList.add('hidden');
+            }
+        }
+        
+        function addKudosCheat() {
+            const amount = parseInt(crownsInput.value);
+
+            if (isNaN(amount) || amount <= 0) {
+                showNotification("Please enter a valid amount greater than 0.", 2000);
+                return;
+            }
+
+            // Prevent extremely large numbers from causing floating point issues
+            const maxSafeInteger = 9007199254740991; 
+            
+            // Check if adding the amount would exceed the safe integer limit
+            if (kudos + amount > maxSafeInteger) {
+                kudos = maxSafeInteger;
+                totalKudosEarned = maxSafeInteger; 
+                showNotification(`Crowns set to MAX SAFE VALUE (${formatNumber(maxSafeInteger)})!`, 3000);
+            } else {
+                kudos += amount;
+                totalKudosEarned += amount;
+                showNotification(`Cheat Activated! +${formatNumber(amount)} Crowns added.`, 3000);
+            }
+            
+            updateDisplay();
+            saveGame();
+            toggleDevConsole(); // Close console after execution
+            
+            if (isToneLoaded) {
+                try {
+                    upgradeSynth.triggerAttackRelease(["C5", "E5", "G5"], "4n"); 
+                } catch (e) { console.error("Tone error on cheat:", e); }
+            }
+        }
+
+
+        // --- GAME LOOPS & INITIALIZATION ---
+
+        function passiveLoop() {
+            if (passiveRate > 0) {
+                const earned = passiveRate / 10;
+                kudos += earned; 
+                totalKudosEarned += earned; 
+                updateDisplay();
+            }
+        }
+        
+        function saveLoop() {
+             saveGame();
+        }
+
+        function init() {
+            // 1. Load the game state first
+            loadGame();
+
+            // 2. Load Tone.js for sound effects setup
+            const script = document.createElement('script');
+            script.src = TONE_JS_URL;
+            document.head.appendChild(script);
+
+            // 3. Click handler that handles both harvest and audio context start
+            aetherCore.addEventListener('click', () => {
+                // Attempt to initialize Tone once
+                if (!isToneLoaded && typeof Tone !== 'undefined') {
+                    initTone();
+                }
+                
+                // Start Audio Context on the first click (required by browsers)
+                if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+
+                // Start Background Music on first click (required by browsers)
+                if (bgMusic && bgMusic.paused) {
+                    // Start playback and catch any potential error (e.g., policy block)
+                    bgMusic.play().catch(e => console.warn("Background music autoplay prevented:", e));
+                }
+                
+                // Harvest the resource (always runs)
+                harvestAether();
+            });
+
+            // 4. Set up other listeners
+            giftBox.addEventListener('click', collectGift);
+            bgChangeButton.addEventListener('click', cycleBackground); 
+            titleToggleButton.addEventListener('click', toggleTitleVisibility);
+            sfxVolumeSlider.addEventListener('input', (e) => setSfxVolume(e.target.value));
+            
+            // BGM Volume Listener
+            bgmVolumeSlider.addEventListener('input', (e) => setBgmVolume(e.target.value));
+
+            // Set initial BGM volume
+            setBgmVolume(bgmVolumeSlider.value);
+
+            // Rebirth Listeners
+            rebirthButton.addEventListener('click', showRebirthModal);
+            confirmRebirth.addEventListener('click', performRebirth);
+            cancelRebirth.addEventListener('click', () => rebirthModal.classList.add('hidden'));
+
+            // Console Listeners (RE-ADDED)
+            addCrownsButton.addEventListener('click', addKudosCheat);
+            
+            // NEW Gift Spawn Cheat Listener
+            spawnGiftButton.addEventListener('click', () => {
+                spawnGiftBox();
+                toggleDevConsole();
+                showNotification("🎁 Gift Box Spawned via Console!", 2000);
+            });
+            
+            crownsInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    addCrownsButton.click();
+                }
+            });
+            
+            // Keydown Listener for \ + Alt to open console (RE-ADDED)
+            document.addEventListener('keydown', (event) => {
+                // Check for Backslas (\) and Alt key pressed simultaneously
+                if ((event.key === '|' || event.code === 'Backslas') && event.altKey) {
+                    event.preventDefault(); // Prevent default browser actions
+                    // Only toggle if the rebirth modal is not actively open
+                    if (rebirthModal.classList.contains('hidden')) {
+                        toggleDevConsole();
+                    }
+                }
+            });
+
+            // Passive generation interval (100ms)
+            setInterval(passiveLoop, 100);
+            
+            // Auto-Save interval (5 seconds)
+            setInterval(saveLoop, 5000);
+
+            // 5. Start the gift spawning cycle
+            scheduleNextGiftSpawn(); 
+
+            // 6. Initial display update
+            updateDisplay();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
