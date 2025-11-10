@@ -110,10 +110,35 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.1s ease-out, background 0.3s ease; /* Added background transition */
             margin: 20px auto;
             position: relative;
         }
+        
+        /* --- NEW ANIMATED COSMETIC STYLING --- */
+        @keyframes rainbow-flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .cosmetic-rainbow {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            background-size: 400% 400%; /* Make the gradient huge so it can move */
+            animation: rainbow-flow 5s linear infinite alternate; /* 'alternate' makes it go back and forth */
+        }
+        
+        @keyframes galaxy-swirl {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .cosmetic-galaxy {
+            background: linear-gradient(90deg, #0f0c29, #302b63, #24243e, #0f0c29);
+            background-size: 400% 400%;
+            animation: galaxy-swirl 10s linear infinite alternate;
+        }
+        /* --- End of new styles --- */
+        
         #aetherCore:active {
             transform: scale(0.95);
         }
@@ -303,7 +328,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
                 <svg id="eyeClosedIcon" class="w-6 h-6 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7A9.957 9.957 0 0118 10"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064 7 9.542 7A9.957 9.957 0 0118 10"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a3 3 0 100-6 3 3 0 000 6z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-6 6"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16l-4 4"></path>
@@ -369,6 +394,10 @@
                         Change Background
                     </button>
                     
+                    <button id="cosmeticsButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-pink); color: white;">
+                        Customize Bean
+                    </button>
+
                     <button id="rebirthButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4 font-extrabold" style="background-color: rgb(75 85 99); color: white;">
                         MAX ALL UPGRADES (40 remaining)
                     </button>
@@ -440,6 +469,24 @@
         </div>
     </div>
 
+    <div id="cosmeticsModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--fg-pink);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-pink);">Cosmetics Shop</h3>
+            <p class="text-white mb-4 font-asap">
+                Purchase or equip different styles for your Cosmic Bean!
+            </p>
+            
+            <div id="cosmeticList" class="scrollable-content upgrade-section pr-3 overflow-y-auto text-left" style="max-height: 300px;">
+                </div>
+            
+            <div class="flex justify-center mt-6">
+                <button id="closeCosmeticsModal" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // Tone.js library for sound effects and music
@@ -447,31 +494,34 @@
         
         // --- GAME VARIABLES & STATE ---
         let kudos = 0; 
-        let totalKudosEarned = 0; // Tracks crowns ever earned (for historical stats, not used for multiplier anymore)
+        let totalKudosEarned = 0; 
         let clickPower = 1;
         let passiveRate = 0;
         let upgrades = {};
         let isToneLoaded = false;
         
-        // REBIRTH VARIABLES (FIXED/UPDATED)
+        // REBIRTH VARIABLES
         let rebirthCount = 0;
-        let rebirthMultiplier = 1; // Base multiplier for clickPower
+        let rebirthMultiplier = 1; 
         
-        // Rebirth Logic Constants (FIXED TO 100% BASE MULTIPLIER)
-        const REBIRTH_MULTIPLIER_BASE = 1.0; // +100% (x1.0) permanent bonus per Rebirth
+        // Rebirth Logic Constants
+        const REBIRTH_MULTIPLIER_BASE = 1.0; 
         
-        // Console State (RE-ADDED)
+        // Console State
         let isConsoleOpen = false;
+        
+        // COSMETIC VARIABLES
+        let unlockedCosmetics = ['classic_pink']; 
+        let appliedCosmetic = 'classic_pink';
 
         // Tone.js Components
         let clickSynth, upgradeSynth, synthFail, titleToggleSynth, rebirthSynth, sfxVolume; 
 
         // New Crown Image Constant and HTML for display
         const CROWN_ICON_URL = "https://cdn-icons-png.flaticon.com/256/6941/6941697.png";
-        // Using a placeholder image with 'C' text as a fallback
         const CROWN_ICON_HTML = `<img src="${CROWN_ICON_URL}" alt="Crown" class="w-4 h-4 inline ml-1 mr-1" onerror="this.onerror=null; this.src='https://placehold.co/16x16/ffeb3b/1e3a8a?text=C'">`;
 
-        // Background Control Variables - Array of objects with URL and Name (Updated)
+        // Background Control Variables
         const backgroundData = [
             { name: "EverGreen", url: "https://cdn2.unrealengine.com/evergreen-patternbackground-1920x1080-a7141a12bf8f.png?resize=1&w=1920" }, 
             { name: "Bean Hill Zone", url: "https://i.redd.it/3hngyakrrxtc1.png" },  
@@ -493,8 +543,8 @@
         // --- GIFT BOX VARIABLES ---
         const MIN_GIFT_CROWNS = 1000;
         const MAX_GIFT_CROWNS = 50000;
-        const MIN_SPAWN_DELAY_S = 25; // 25 seconds
-        const MAX_SPAWN_DELAY_S = 45; // 45 seconds
+        const MIN_SPAWN_DELAY_S = 25; 
+        const MAX_SPAWN_DELAY_S = 45; 
         let giftSpawnTimeout; 
 
         // Upgrades 
@@ -511,6 +561,73 @@
         for (const key of UPGRADE_KEYS) {
             TOTAL_MAX_LEVELS += upgradeData[key].maxLevel;
         }
+        
+        // *** UPDATED COSMETICS DATA ***
+        const cosmeticsData = {
+            'classic_pink': {
+                name: "Classic Pink",
+                cost: 0, // Free!
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #ff6e96 40%, #e91e63 80%, #d81b60 100%)"
+            },
+            'ocean_blue': {
+                name: "Ocean Blue",
+                cost: 100000, // 100k Crowns
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #2196f3 40%, #1e88e5 80%, #1976d2 100%)"
+            },
+            'slime_green': {
+                name: "Slime Green",
+                cost: 500000, // 500k Crowns
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #8bc34a 40%, #689f38 80%, #558b2f 100%)"
+            },
+            'regal_gold': {
+                name: "Regal Gold",
+                cost: 10000000, // 10M Crowns
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #fffde7 0%, #ffeb3b 40%, #fbc02d 80%, #f9a825 100%)"
+            },
+            'sunset_orange': {
+                name: "Sunset Orange",
+                cost: 250000, // 250k
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #ff9800 40%, #f57c00 80%, #e65100 100%)"
+            },
+            'royal_purple': {
+                name: "Royal Purple",
+                cost: 750000, // 750k
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #9c27b0 40%, #7b1fa2 80%, #4a148c 100%)"
+            },
+            'pearl_white': {
+                name: "Pearl White",
+                cost: 5000000, // 5M
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #e0e0e0 40%, #bdbdbd 80%, #9e9e9e 100%)"
+            },
+            'void_black': {
+                name: "Void Black",
+                cost: 5000000, // 5M
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #bdbdbd 0%, #616161 40%, #424242 80%, #212121 100%)"
+            },
+            'rainbow_flow': {
+                name: "Rainbow Flow",
+                cost: 50000000, // 50M
+                type: 'static',
+                className: 'cosmetic-rainbow',
+                gradient: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #0000ff, #9400d3)" // For the preview icon
+            },
+            'galaxy_swirl': {
+                name: "Galaxy Swirl",
+                cost: 100000000, // 100M
+                type: 'static',
+                className: 'cosmetic-galaxy',
+                gradient: "linear-gradient(90deg, #0f0c29, #302b63, #24243e)" // For the preview icon
+            }
+        };
+        // **************************
 
         // --- DOM ELEMENTS ---
         const aetherCore = document.getElementById('aetherCore');
@@ -539,12 +656,12 @@
         const bgMusic = document.getElementById('bgMusic'); 
         const bgmVolumeSlider = document.getElementById('bgmVolumeSlider');
 
-        // Console Elements (RE-ADDED)
+        // Console Elements
         const devConsole = document.getElementById('devConsole');
         const consoleKudosDisplay = document.getElementById('consoleKudos');
         const crownsInput = document.getElementById('crownsInput');
         const addCrownsButton = document.getElementById('addCrownsButton');
-        const spawnGiftButton = document.getElementById('spawnGiftButton'); // NEW ELEMENT
+        const spawnGiftButton = document.getElementById('spawnGiftButton'); 
         // --- UTILITY FUNCTIONS ---
 
         function formatNumber(num) {
@@ -567,7 +684,9 @@
                 totalKudosEarned: totalKudosEarned,
                 upgrades: upgrades,
                 rebirthCount: rebirthCount,
-                rebirthMultiplier: rebirthMultiplier
+                rebirthMultiplier: rebirthMultiplier,
+                unlockedCosmetics: unlockedCosmetics,
+                appliedCosmetic: appliedCosmetic
             };
             localStorage.setItem('beanClickerSave', JSON.stringify(saveObject));
         }
@@ -578,14 +697,15 @@
                 const data = JSON.parse(savedData);
                 kudos = data.kudos || 0;
                 totalKudosEarned = data.totalKudosEarned || 0;
-                // Ensure rebirth state loads correctly with defaults
                 rebirthCount = data.rebirthCount || 0;
                 rebirthMultiplier = data.rebirthMultiplier || 1;
                 
-                // Initialize/overwrite upgrades from saved data
+                unlockedCosmetics = data.unlockedCosmetics || ['classic_pink'];
+                appliedCosmetic = data.appliedCosmetic || 'classic_pink';
+                applyCosmeticStyle(appliedCosmetic); // Apply the loaded style
+                
                 const loadedUpgrades = data.upgrades || {};
                 for (const id in upgradeData) {
-                    // Use saved level, default to 0 if not present
                     upgrades[id] = loadedUpgrades[id] !== undefined ? loadedUpgrades[id] : 0;
                 }
                 
@@ -593,7 +713,6 @@
                 updateDisplay();
                 showNotification("Game Loaded!", 1500);
             } else {
-                // Initialize default upgrade levels if no save found
                 for (const id in upgradeData) {
                     upgrades[id] = 0;
                 }
@@ -611,10 +730,8 @@
             }
             
             try {
-                // 1. Volumes and Master Connection
                 sfxVolume = new Tone.Volume(sfxVolumeSlider.value * 0.6 - 60).toDestination();
                 
-                // 2. Synths
                 clickSynth = new Tone.PolySynth(Tone.Synth, {
                     oscillator: { type: "square" },
                     envelope: { attack: 0.001, decay: 0.05, sustain: 0.0, release: 0.1 }
@@ -648,7 +765,6 @@
             } catch (e) {
                 console.error("Error initializing Tone.js components:", e);
                 isToneLoaded = false;
-                // Mock Tone objects for error prevention
                 sfxVolume = { volume: { value: 0 } };
                 clickSynth = { triggerAttackRelease: (f, d) => {} };
                 upgradeSynth = { triggerAttackRelease: (f, d) => {} };
@@ -660,7 +776,6 @@
 
         function setSfxVolume(value) { 
             if (sfxVolume) {
-                // Convert 0-100 range to Tone's dB range (-60dB to 0dB)
                 const db = value == 0 ? -100 : value * 0.6 - 60;
                 sfxVolume.volume.value = db;
             }
@@ -669,32 +784,21 @@
         // --- BGM VOLUME FUNCTION ---
         function setBgmVolume(value) {
             if (bgMusic) {
-                // Convert 0-100 range to 0.0-1.0
                 bgMusic.volume = value / 100;
             }
         }
 
-        // --- NOTIFICATION SYSTEM (Updated Message Format) ---
-
-        /**
-         * Displays a temporary notification message that fades out.
-         * @param {string} message The text to display.
-         * @param {number} durationMs The time in milliseconds before fade-out starts.
-         */
+        // --- NOTIFICATION SYSTEM ---
         function showNotification(message, durationMs = 3000) {
-            // Remove any existing notification before creating a new one
             document.querySelectorAll('.notification-box').forEach(el => el.remove());
 
             const box = document.createElement('div');
             box.classList.add('notification-box', 'animate-pulse'); 
             box.innerHTML = `<p class="text-sm md:text-base">${message}</p>`;
-
             document.body.appendChild(box);
 
-            // Schedule the fade-out after the duration
             setTimeout(() => {
                 box.classList.add('fade-out');
-                // Schedule removal after fade-out transition completes (0.5s from CSS)
                 setTimeout(() => box.remove(), 500); 
             }, durationMs);
         }
@@ -703,55 +807,40 @@
         function cycleBackground() {
             currentBgIndex = (currentBgIndex + 1) % backgroundData.length;
             const newBg = backgroundData[currentBgIndex];
-            
-            // 1. Change the background image URL
             bodyElement.style.backgroundImage = `url('${newBg.url}')`;
-
-            // 2. Show the notification with the new format
             showNotification(`Changed Background To ${newBg.name} Successfully!`, 3000);
         }
 
         // --- TITLE TOGGLE FIX ---
         function toggleTitleVisibility() {
-            // 1. Toggle the collapse class on the H1's wrapper
             titleTextWrapper.classList.toggle('title-text-collapsed');
-            
-            // 2. Icon logic flips based on the new state
             const isNowHidden = titleTextWrapper.classList.contains('title-text-collapsed');
 
             if (isNowHidden) {
-                // Title is now HIDDEN (collapsed) -> Show Closed Eye
                 eyeOpenIcon.classList.add('hidden');
                 eyeClosedIcon.classList.remove('hidden');
-                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("C4", "8n"); // Low note for hiding
+                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("C4", "8n"); 
             } else {
-                // Title is now VISIBLE (expanded) -> Show Open Eye
                 eyeOpenIcon.classList.remove('hidden');
                 eyeClosedIcon.classList.add('hidden');
-                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("G4", "8n"); // High note for showing
+                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("G4", "8n"); 
             }
         }
 
         // --- ANTI-CHEATING LOGIC ---
         function handleAutoclickerDetection() { 
-            // Add current timestamp to the array
             const now = performance.now();
             lastClickTimestamps.push(now);
-
-            // Remove timestamps older than 1 second (1000ms)
             lastClickTimestamps = lastClickTimestamps.filter(timestamp => now - timestamp < 1000);
 
-            // Check if we have too many clicks in the last second
             const clickCount = lastClickTimestamps.length;
-            if (clickCount > (1000 / CLICK_THRESHOLD_MS) + 1) { // More than ~21 clicks/second
+            if (clickCount > (1000 / CLICK_THRESHOLD_MS) + 1) { 
                 if (!isClickingBlocked) {
                     isClickingBlocked = true;
                     blockOverlay.classList.remove('hidden');
                     
-                    // Play fail sound if blocked, for user feedback
                     if (isToneLoaded) {
                         try {
-                            // Play a sharp noise for blocked action
                             synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
                         } catch (e) { console.error("Tone error on blocked click:", e); }
                     }
@@ -766,7 +855,7 @@
                         if (timeLeft <= 0) {
                             clearInterval(blockInterval);
                             isClickingBlocked = false;
-                            lastClickTimestamps = []; // Clear history
+                            lastClickTimestamps = []; 
                             blockOverlay.classList.add('hidden');
                         }
                     }, 100);
@@ -778,10 +867,7 @@
 
         function scheduleNextGiftSpawn() {
             clearTimeout(giftSpawnTimeout);
-
-            // Calculate a random delay between MIN and MAX seconds
             const delayMs = Math.random() * (MAX_SPAWN_DELAY_S - MIN_SPAWN_DELAY_S) * 1000 + MIN_SPAWN_DELAY_S * 1000;
-
             giftSpawnTimeout = setTimeout(spawnGiftBox, delayMs);
         }
 
@@ -807,7 +893,6 @@
 
             giftBox.style.left = `${randomX}px`;
             giftBox.style.top = `${randomY}px`;
-            
             giftBox.style.display = 'block';
             setTimeout(() => { giftBox.style.opacity = '1'; }, 50); 
 
@@ -880,19 +965,15 @@
         }
 
         function harvestAether() {
-            if (isClickingBlocked) {
-                return; 
-            }
+            if (isClickingBlocked) return; 
             
             handleAutoclickerDetection();
 
-            // *** Add Click Sound SFX (FIX) ***
             if (isToneLoaded) {
                 try {
                     clickSynth.triggerAttackRelease("C5", "32n");
                 } catch (e) { console.error("Tone error on click:", e); }
             }
-            // ***************************
 
             const effectiveAmount = clickPower; 
             kudos += effectiveAmount; 
@@ -941,9 +1022,8 @@
             }
         }
         
-        // --- REBIRTH LOGIC (UPDATED) ---
+        // --- REBIRTH LOGIC ---
         
-        // Function to count the sum of all current upgrade levels
         function countTotalUpgradeLevels() {
             let total = 0;
             for (const id in upgrades) {
@@ -952,7 +1032,6 @@
             return total;
         }
 
-        // Function to check if all upgrades are at max level (The Rebirth Condition)
         function checkRebirthCondition() {
             for (const id in upgradeData) {
                 if (upgrades[id] < upgradeData[id].maxLevel) {
@@ -963,8 +1042,6 @@
         }
         
         function calculateRebirthBonus() {
-            // New multiplier is based on current rebirth count
-            // Formula: 1 + (1.0 * (rebirthCount + 1))
             const nextRebirthMultiplier = 1 + (REBIRTH_MULTIPLIER_BASE * (rebirthCount + 1));
             const multiplierIncrease = nextRebirthMultiplier - rebirthMultiplier;
 
@@ -986,7 +1063,6 @@
 
             const { nextRebirthMultiplier, multiplierIncrease } = calculateRebirthBonus();
             
-            // Set modal details
             rebirthDetails.innerHTML = `
                 <p>Rebirth Count: **#${rebirthCount}**</p>
                 <p>Current Multiplier: **x${rebirthMultiplier.toFixed(3)}**</p>
@@ -999,7 +1075,6 @@
                 </p>
             `;
             
-            // Show the modal
             rebirthModal.classList.remove('hidden');
         }
         
@@ -1012,25 +1087,18 @@
             
             const { nextRebirthMultiplier } = calculateRebirthBonus();
             
-            // 1. Apply the new permanent multiplier
             rebirthMultiplier = nextRebirthMultiplier;
             rebirthCount++;
-            
-            // 2. Reset temporary stats
             kudos = 0;
-            // totalKudosEarned is NOT reset
             
-            // 3. Reset upgrades
             for (const id in upgradeData) {
                 upgrades[id] = 0;
             }
             
-            // 4. Recalculate stats with the new multiplier
             recalculateStats();
             updateDisplay();
             saveGame();
             
-            // 5. Play sound and hide modal
             if (isToneLoaded) {
                  try {
                      rebirthSynth.triggerAttackRelease("C2", "2n");
@@ -1040,6 +1108,108 @@
             rebirthModal.classList.add('hidden');
             showNotification(`CORE RESET SUCCESS! Rebirth #${rebirthCount}. New Multiplier: x${rebirthMultiplier.toFixed(3)}`, 5000);
         }
+        
+        // --- *** UPDATED COSMETIC SHOP FUNCTIONS *** ---
+
+        function applyCosmeticStyle(cosmeticId) {
+            if (!cosmeticsData[cosmeticId]) return; // Safety check
+            const cosmetic = cosmeticsData[cosmeticId];
+
+            // --- 1. RESET ALL STYLES ---
+            
+            // Loop through all cosmetics and remove any known animation classes
+            Object.values(cosmeticsData).forEach(c => {
+                if (c.type === 'animated' && c.className) {
+                    aetherCore.classList.remove(c.className);
+                }
+            });
+            
+            // Clear inline background style (for static gradients)
+            aetherCore.style.background = ''; 
+            
+            // --- 2. APPLY NEW STYLES ---
+            if (cosmetic.type === 'animated') {
+                // Apply the animation class (e.g., 'cosmetic-rainbow')
+                aetherCore.classList.add(cosmetic.className);
+            } else {
+                // Apply the static gradient
+                aetherCore.style.background = cosmetic.gradient;
+            }
+        }
+
+        function openCosmeticsModal() {
+            const listElement = document.getElementById('cosmeticList');
+            listElement.innerHTML = ''; // Clear the list
+
+            for (const id in cosmeticsData) {
+                const cosmetic = cosmeticsData[id];
+                const isUnlocked = unlockedCosmetics.includes(id);
+                const isEquipped = (appliedCosmetic === id);
+                
+                const card = document.createElement('div');
+                card.classList.add('upgrade-card', 'flex', 'justify-between', 'items-center', 'mb-3');
+                card.style.borderColor = 'var(--fg-pink)';
+                
+                let buttonHtml = '';
+                if (isEquipped) {
+                    buttonHtml = `<span class="cost-btn px-4 py-2 text-sm bg-gray-600 cursor-default">Equipped</span>`;
+                } else if (isUnlocked) {
+                    buttonHtml = `<button class="cost-btn px-4 py-2 text-sm" style="background-color: var(--fg-blue);" onclick="equipCosmetic('${id}')">Equip</button>`;
+                } else {
+                    const canAfford = kudos >= cosmetic.cost;
+                    buttonHtml = `
+                        <button class="cost-btn px-4 py-2 text-sm flex items-center" 
+                                style="background-color: ${canAfford ? 'var(--fg-pink)' : '#a0a0a0'};" 
+                                onclick="buyCosmetic('${id}')" ${!canAfford ? 'disabled' : ''}>
+                            ${formatNumber(cosmetic.cost)} ${CROWN_ICON_HTML}
+                        </button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full mr-4 border-2 border-white" style="background: ${cosmetic.gradient};"></div>
+                        <div class="flex-1">
+                            <div class="text-lg font-bold" style="color: var(--fg-yellow);">${cosmetic.name}</div>
+                        </div>
+                    </div>
+                    ${buttonHtml}
+                `;
+                listElement.appendChild(card);
+            }
+            
+            document.getElementById('cosmeticsModal').classList.remove('hidden');
+        }
+
+        function buyCosmetic(cosmeticId) {
+            const cosmetic = cosmeticsData[cosmeticId];
+            if (unlockedCosmetics.includes(cosmeticId)) return; 
+
+            if (kudos >= cosmetic.cost) {
+                kudos -= cosmetic.cost;
+                unlockedCosmetics.push(cosmeticId);
+                
+                showNotification(`Unlocked: ${cosmetic.name}!`, 3000);
+                if (isToneLoaded) upgradeSynth.triggerAttackRelease(["G4", "C5", "E5"], "4n");
+                
+                openCosmeticsModal();
+                updateDisplay(); 
+                saveGame();
+            } else {
+                showNotification("Not enough Crowns!", 2000);
+                if (isToneLoaded) synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
+            }
+        }
+
+        function equipCosmetic(cosmeticId) {
+            if (!unlockedCosmetics.includes(cosmeticId)) return; 
+
+            appliedCosmetic = cosmeticId;
+            applyCosmeticStyle(cosmeticId);
+            
+            openCosmeticsModal();
+            saveGame();
+        }
+        // ***************************************
 
         function recalculateStats() {
             let baseClickPower = 1;
@@ -1056,7 +1226,6 @@
                 }
             }
             
-            // Apply permanent multiplier to click power, keeping 0 decimal points for click power
             clickPower = Math.round(baseClickPower * rebirthMultiplier);
         }
 
@@ -1070,10 +1239,9 @@
                 button.style.backgroundColor = 'var(--fg-rebirth)';
                 button.style.color = 'black';
                 button.style.boxShadow = '0 0 15px var(--fg-rebirth)';
-                // UPDATED TEXT HERE
                 button.textContent = "REBIRTH NOW! (READY!)"; 
             } else {
-                button.style.backgroundColor = 'rgb(75 85 99)'; // Tailwind gray-600
+                button.style.backgroundColor = 'rgb(75 85 99)'; 
                 button.style.color = 'white';
                 button.style.boxShadow = 'none';
                 button.textContent = `MAX ALL UPGRADES (${remainingLevels} remaining)`;
@@ -1085,13 +1253,11 @@
             kudosCountDisplay.textContent = formatNumber(Math.floor(kudos)); 
             clickPowerDisplay.textContent = formatNumber(clickPower);
             passiveRateDisplay.textContent = formatNumber(passiveRate); 
-            // Show multiplier with 3 decimal points to highlight progression
             multiplierValueDisplay.textContent = `x${rebirthMultiplier.toFixed(3)}`; 
 
             renderUpgradeCards();
-            updateRebirthButtonState(); // Update the button state on every display update
+            updateRebirthButtonState(); 
             
-            // Update console display if open (RE-ADDED)
             if (isConsoleOpen) {
                 consoleKudosDisplay.textContent = formatNumber(Math.floor(kudos));
             }
@@ -1116,9 +1282,7 @@
                 const btnColor = data.type === 'click' ? 'var(--fg-pink)' : 'var(--fg-yellow)';
                 const btnTextColor = data.type === 'click' ? 'white' : 'var(--bg-dark)';
                 const levelText = isMaxLevel ? 'MAX' : `Lv. ${level}/${data.maxLevel}`;
-                
                 const effectUnit = data.type === 'click' ? 'Click' : 'C/s';
-
 
                 card.innerHTML = `
                     <div class="flex-1">
@@ -1149,15 +1313,14 @@
             }
         }
         
-        // --- CONSOLE LOGIC (RE-ADDED) ---
+        // --- CONSOLE LOGIC ---
         
         function toggleDevConsole() {
             isConsoleOpen = !isConsoleOpen;
             if (isConsoleOpen) {
-                // Update current kudos display and show console
                 consoleKudosDisplay.textContent = formatNumber(Math.floor(kudos));
                 devConsole.classList.remove('hidden');
-                crownsInput.focus(); // Focus the input field
+                crownsInput.focus(); 
             } else {
                 devConsole.classList.add('hidden');
             }
@@ -1171,10 +1334,8 @@
                 return;
             }
 
-            // Prevent extremely large numbers from causing floating point issues
             const maxSafeInteger = 9007199254740991; 
             
-            // Check if adding the amount would exceed the safe integer limit
             if (kudos + amount > maxSafeInteger) {
                 kudos = maxSafeInteger;
                 totalKudosEarned = maxSafeInteger; 
@@ -1187,7 +1348,7 @@
             
             updateDisplay();
             saveGame();
-            toggleDevConsole(); // Close console after execution
+            toggleDevConsole(); 
             
             if (isToneLoaded) {
                 try {
@@ -1213,46 +1374,33 @@
         }
 
         function init() {
-            // 1. Load the game state first
             loadGame();
 
-            // 2. Load Tone.js for sound effects setup
             const script = document.createElement('script');
             script.src = TONE_JS_URL;
             document.head.appendChild(script);
 
-            // 3. Click handler that handles both harvest and audio context start
             aetherCore.addEventListener('click', () => {
-                // Attempt to initialize Tone once
                 if (!isToneLoaded && typeof Tone !== 'undefined') {
                     initTone();
                 }
                 
-                // Start Audio Context on the first click (required by browsers)
                 if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
                     Tone.start();
                 }
 
-                // Start Background Music on first click (required by browsers)
                 if (bgMusic && bgMusic.paused) {
-                    // Start playback and catch any potential error (e.g., policy block)
                     bgMusic.play().catch(e => console.warn("Background music autoplay prevented:", e));
                 }
                 
-                // Harvest the resource (always runs)
                 harvestAether();
             });
 
-            // 4. Set up other listeners
             giftBox.addEventListener('click', collectGift);
             bgChangeButton.addEventListener('click', cycleBackground); 
             titleToggleButton.addEventListener('click', toggleTitleVisibility);
             sfxVolumeSlider.addEventListener('input', (e) => setSfxVolume(e.target.value));
-            
-            // BGM Volume Listener
             bgmVolumeSlider.addEventListener('input', (e) => setBgmVolume(e.target.value));
-
-            // Set initial BGM volume
             setBgmVolume(bgmVolumeSlider.value);
 
             // Rebirth Listeners
@@ -1260,44 +1408,37 @@
             confirmRebirth.addEventListener('click', performRebirth);
             cancelRebirth.addEventListener('click', () => rebirthModal.classList.add('hidden'));
 
-            // Console Listeners (RE-ADDED)
+            // Cosmetic Listeners
+            const cosmeticsModal = document.getElementById('cosmeticsModal');
+            const cosmeticsButton = document.getElementById('cosmeticsButton');
+            const closeCosmeticsModal = document.getElementById('closeCosmeticsModal');
+            cosmeticsButton.addEventListener('click', openCosmeticsModal);
+            closeCosmeticsModal.addEventListener('click', () => cosmeticsModal.classList.add('hidden'));
+
+            // Console Listeners
             addCrownsButton.addEventListener('click', addKudosCheat);
-            
-            // NEW Gift Spawn Cheat Listener
             spawnGiftButton.addEventListener('click', () => {
                 spawnGiftBox();
                 toggleDevConsole();
                 showNotification("🎁 Gift Box Spawned via Console!", 2000);
             });
-            
             crownsInput.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     addCrownsButton.click();
                 }
             });
-            
-            // Keydown Listener for \ + Alt to open console (RE-ADDED)
             document.addEventListener('keydown', (event) => {
-                // Check for Backslas (\) and Alt key pressed simultaneously
-                if ((event.key === '|' || event.code === 'Backslas') && event.altKey) {
-                    event.preventDefault(); // Prevent default browser actions
-                    // Only toggle if the rebirth modal is not actively open
+                if (event.LockedAdminChangeItWithaltKey) {
+                    event.preventDefault(); 
                     if (rebirthModal.classList.contains('hidden')) {
                         toggleDevConsole();
                     }
                 }
             });
 
-            // Passive generation interval (100ms)
             setInterval(passiveLoop, 100);
-            
-            // Auto-Save interval (5 seconds)
             setInterval(saveLoop, 5000);
-
-            // 5. Start the gift spawning cycle
             scheduleNextGiftSpawn(); 
-
-            // 6. Initial display update
             updateDisplay();
         }
 
@@ -1305,4 +1446,3 @@
     </script>
 </body>
 </html>
-
