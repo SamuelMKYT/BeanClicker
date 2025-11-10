@@ -467,7 +467,7 @@
         let clickSynth, upgradeSynth, synthFail, titleToggleSynth, rebirthSynth, sfxVolume; 
 
         // New Crown Image Constant and HTML for display
-        const CROWN_ICON_URL = "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/2/26/Crown_Decoration.png/revision/latest/thumbnail/width/360/height/450?cb=20250730001833";
+        const CROWN_ICON_URL = "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/3/32/FG_art_Crown_currency.png/revision/latest?cb=20211205041342";
         // Using a placeholder image with 'C' text as a fallback
         const CROWN_ICON_HTML = `<img src="${CROWN_ICON_URL}" alt="Crown" class="w-4 h-4 inline ml-1 mr-1" onerror="this.onerror=null; this.src='https://placehold.co/16x16/ffeb3b/1e3a8a?text=C'">`;
 
@@ -475,25 +475,25 @@
         const backgroundData = [
             { name: "EverGreen", url: "https://cdn2.unrealengine.com/evergreen-patternbackground-1920x1080-a7141a12bf8f.png?resize=1&w=1920" }, 
             { name: "Bean Hill Zone", url: "https://i.redd.it/3hngyakrrxtc1.png" },  
-            { name: "Yeetropolis", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/a/a2/Yeetropolis_%28Background%29.png/revision/latest/scale-to-width-down/250?cb=20250527155622" }, 
+            { name: "Winter", url: "https://preview.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-21e67zjnsutc1.png?width=640&crop=smart&auto=webp&s=1989890a425a92aa9bb9616b710681ccc0509e70" }, 
             { name: "Ocean", url: "https://i.redd.it/fall-guys-background-themes-part-2-perfect-for-your-own-v0-qpvwwxsom1wc1.png?width=1365&format=png&auto=webp&s=36c3665c0296692a05916d37ef867baecd1e6a5d" }, 
             { name: "Digital", url: "https://i.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-cru9imgfvutc1.png?width=1365&format=png&auto=webp&s=a70e7191c68a8c81637ee4223c14caffc2b07b03" }, 
-			{ name: "Scrapyard", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/7/78/Scrapyard_%28Background%29.jpg/revision/latest/scale-to-width-down/1000?cb=20251105090247" },
-			{ name: "Midnight", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/0/07/Midnight_%28Background%29.jpg/revision/latest/scale-to-width-down/1000?cb=20250407095956" }
+			{ name: "ScrapyardStumble", url: "https://static.wikia.nocookie.net/fallguysultimateknockout_gamepedia_en/images/7/78/Scrapyard_%28Background%29.jpg/revision/latest/scale-to-width-down/1000?cb=20251105090247" },
+			{ name: "Red", url: "https://images5.alphacoders.com/125/thumbbig-1258434.webp" }
         ];
         let currentBgIndex = 0;
         const bodyElement = document.body;
 
         // Anti-Cheat Variables 
-        const CLICK_THRESHOLD_MS = 50; 
-        const CLICK_BLOCK_DURATION_MS = 3000;
+        const CLICK_THRESHOLD_MS = 100; 
+        const CLICK_BLOCK_DURATION_MS = 5000;
         let lastClickTimestamps = [];
         let isClickingBlocked = false;
 
         // --- GIFT BOX VARIABLES ---
         const MIN_GIFT_CROWNS = 1000;
-        const MAX_GIFT_CROWNS = 100000;
-        const MIN_SPAWN_DELAY_S = 15; // 15 seconds
+        const MAX_GIFT_CROWNS = 50000;
+        const MIN_SPAWN_DELAY_S = 25; // 25 seconds
         const MAX_SPAWN_DELAY_S = 45; // 45 seconds
         let giftSpawnTimeout; 
 
@@ -502,7 +502,7 @@
             'wobbly_arms': { name: "Wobbly Arms Training", type: 'click', baseCost: 10, costMultiplier: 1.5, effect: 1, description: "Better core stability for more consistent Crown punches.", level: 0, maxLevel: 10 },
             'slime_scrapper': { name: "Slime Scraper Drones", type: 'passive', baseCost: 100, costMultiplier: 2.0, effect: 0.1, description: "Automated drones salvage Crowns left on the Slime Climb floor.", level: 0, maxLevel: 10 },
             'grab_training': { name: "Aggressive Grab Technique", type: 'click', baseCost: 1000, costMultiplier: 1.8, effect: 10, description: "Focus your bean-punching power for a massive click boost.", level: 0, maxLevel: 5 },
-            'fan_boost': { name: "Big Fans Energy", type: 'passive', baseCost: 5000, costMultiplier: 2.5, effect: 1, description: "A constant flow of wind pushes more Crowns toward you every second.", level: 0, maxLevel: 5 },
+            'fan_boost': { name: "Big Fans Energy", type: 'passive', baseCost: 3000, costMultiplier: 2.5, effect: 1, description: "A constant flow of wind pushes more Crowns toward you every second.", level: 0, maxLevel: 5 },
         };
         
         // Calculate total max levels once
@@ -834,7 +834,7 @@
             updateDisplay();
             saveGame(); 
 
-            showNotification(`🎁 MEGA BONUS! +${formatNumber(randomCrowns)} Crowns collected!`, 4000);
+            showNotification(` MEGA BONUS! 🎁 +${formatNumber(randomCrowns)} Crowns collected!`, 4000);
 
             if (isToneLoaded) {
                 try {
@@ -1305,3 +1305,4 @@
     </script>
 </body>
 </html>
+
