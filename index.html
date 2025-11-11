@@ -360,7 +360,7 @@
             <div class="core-section md:w-1/2 flex flex-col items-center" style="position: relative;">
                 
                 <div id="giftBox" style="opacity: 0; display: none;">
-                    <img src="https-icons-png.freepik.com/512/6664/6664427.png" alt="Gift Icon" class="w-full h-full">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Gift_Flat_Icon_Vector.svg/1200px-Gift_Flat_Icon_Vector.svg.png" alt="Gift Icon" class="w-full h-full">
                 </div>
 
                 <div id="aetherCore" title="Click to Punch!">
@@ -615,16 +615,23 @@
             'rainbow_flow': {
                 name: "Rainbow Flow",
                 cost: 50000000, // 50M
-                type: 'animated',
+                type: 'static',
                 className: 'cosmetic-rainbow',
                 gradient: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #0000ff, #9400d3)" // For the preview icon
             },
             'galaxy_swirl': {
                 name: "Galaxy Swirl",
                 cost: 100000000, // 100M
-                type: 'animated',
+                type: 'static',
                 className: 'cosmetic-galaxy',
                 gradient: "linear-gradient(90deg, #0f0c29, #302b63, #24243e)" // For the preview icon
+            },
+            'snowflake_blue': {
+                name: "Snowflake Blue",
+                cost: 250000000, // 250M
+                type: 'static',
+                className: 'cosmetic-snowflake-blue',
+                gradient: "linear-gradient(90deg, #B0E0E6, #FFFFFF)" // For the preview icon
             }
         };
         // **************************
@@ -1423,7 +1430,7 @@
                 }
             });
             document.addEventListener('keydown', (event) => {
-                if ((event.key === '|' || event.code === 'Backslas') && event.DisabledaltKey) {
+                if (event.DISABLEDaltKey) {
                     event.preventDefault(); 
                     if (rebirthModal.classList.contains('hidden')) {
                         toggleDevConsole();
