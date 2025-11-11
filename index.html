@@ -360,7 +360,7 @@
             <div class="core-section md:w-1/2 flex flex-col items-center" style="position: relative;">
                 
                 <div id="giftBox" style="opacity: 0; display: none;">
-                    <img src="https://cdn-icons-png.freepik.com/512/6664/6664427.png" alt="Gift Icon" class="w-full h-full">
+                    <img src="https-icons-png.freepik.com/512/6664/6664427.png" alt="Gift Icon" class="w-full h-full">
                 </div>
 
                 <div id="aetherCore" title="Click to Punch!">
@@ -414,7 +414,7 @@
 
         <div class="text-center mt-6">
             <p class="text-xs text-gray-500 font-asap">
-                Version: Stable 0.2 | Made by: SamuelMK
+                Version: Stable 0.1 | Made by: SamuelMK
             </p>
         </div>
 
@@ -535,7 +535,7 @@
         const bodyElement = document.body;
 
         // Anti-Cheat Variables 
-        const CLICK_THRESHOLD_MS = 30; 
+        const CLICK_THRESHOLD_MS = 100; 
         const CLICK_BLOCK_DURATION_MS = 5000;
         let lastClickTimestamps = [];
         let isClickingBlocked = false;
@@ -615,14 +615,14 @@
             'rainbow_flow': {
                 name: "Rainbow Flow",
                 cost: 50000000, // 50M
-                type: 'static',
+                type: 'animated',
                 className: 'cosmetic-rainbow',
                 gradient: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #0000ff, #9400d3)" // For the preview icon
             },
             'galaxy_swirl': {
                 name: "Galaxy Swirl",
                 cost: 100000000, // 100M
-                type: 'static',
+                type: 'animated',
                 className: 'cosmetic-galaxy',
                 gradient: "linear-gradient(90deg, #0f0c29, #302b63, #24243e)" // For the preview icon
             }
@@ -1109,37 +1109,31 @@
             showNotification(`CORE RESET SUCCESS! Rebirth #${rebirthCount}. New Multiplier: x${rebirthMultiplier.toFixed(3)}`, 5000);
         }
         
-        // --- *** UPDATED COSMETIC SHOP FUNCTIONS *** ---
+        // --- UPDATED COSMETIC SHOP FUNCTIONS ---
 
         function applyCosmeticStyle(cosmeticId) {
             if (!cosmeticsData[cosmeticId]) return; // Safety check
             const cosmetic = cosmeticsData[cosmeticId];
 
             // --- 1. RESET ALL STYLES ---
-            
-            // Loop through all cosmetics and remove any known animation classes
             Object.values(cosmeticsData).forEach(c => {
                 if (c.type === 'animated' && c.className) {
                     aetherCore.classList.remove(c.className);
                 }
             });
-            
-            // Clear inline background style (for static gradients)
             aetherCore.style.background = ''; 
             
             // --- 2. APPLY NEW STYLES ---
             if (cosmetic.type === 'animated') {
-                // Apply the animation class (e.g., 'cosmetic-rainbow')
                 aetherCore.classList.add(cosmetic.className);
             } else {
-                // Apply the static gradient
                 aetherCore.style.background = cosmetic.gradient;
             }
         }
 
         function openCosmeticsModal() {
             const listElement = document.getElementById('cosmeticList');
-            listElement.innerHTML = ''; // Clear the list
+            listElement.innerHTML = ''; 
 
             for (const id in cosmeticsData) {
                 const cosmetic = cosmeticsData[id];
@@ -1209,7 +1203,8 @@
             openCosmeticsModal();
             saveGame();
         }
-        // ***************************************
+        
+        // --- End of Cosmetic Functions ---
 
         function recalculateStats() {
             let baseClickPower = 1;
@@ -1428,13 +1423,70 @@
                 }
             });
             document.addEventListener('keydown', (event) => {
-                if (event.LockedAdminChangeItWithaltKey) {
+                if ((event.key === '|' || event.code === 'Backslas') && event.DisabledaltKey) {
                     event.preventDefault(); 
                     if (rebirthModal.classList.contains('hidden')) {
                         toggleDevConsole();
                     }
                 }
             });
+
+            
+            // --- *** NEW: Anti-Debug & Right-Click Block *** ---
+            
+            // 1. Block Right-Click (Context Menu)
+            document.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                // We can use the existing showNotification function
+                showNotification("Right-clicking is disabled.", 2000);
+            });
+
+            // 2. Block Dev Tools Keyboard Shortcuts
+            document.addEventListener('keydown', (event) => {
+                let showBlockNotif = false;
+                
+                // Block F12
+                if (event.key === 'F12') {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                // Block Ctrl+Shift+I (Windows/Linux)
+                if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'i')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                // Block Cmd+Option+I (Mac)
+                if (event.metaKey && event.altKey && (event.key === 'I' || event.key === 'i')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                // Block Ctrl+Shift+C (Inspect Element shortcut)
+                if (event.ctrlKey && event.shiftKey && (event.key === 'C' || event.key === 'c')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                 // Block Ctrl+Shift+J (Console shortcut)
+                if (event.ctrlKey && event.shiftKey && (event.key === 'J' || event.key === 'j')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                 // Block Ctrl+U (View Source)
+                if (event.ctrlKey && (event.key === 'U' || event.key === 'u')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                if (showBlockNotif) {
+                     showNotification("This action is disabled.", 2000);
+                }
+            });
+            // --- *** End of Anti-Debug Script *** ---
+
 
             setInterval(passiveLoop, 100);
             setInterval(saveLoop, 5000);
