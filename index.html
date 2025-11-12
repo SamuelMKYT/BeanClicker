@@ -23,6 +23,8 @@
             --scroll-track: #374151; /* Darker grey */
             /* Rebirth Colors (New) */
             --fg-rebirth: #00bcd4; /* Cyan/Teal for Rebirth */
+            /* Leaderboard Colors (New) */
+            --fg-leaderboard: #ff9800; /* Orange */
         }
 
         /* --- BODY & CONTAINER --- */
@@ -290,6 +292,41 @@
             text-align: center;
             font-family: 'Asap', sans-serif;
         }
+        
+        /* --- Leaderboard Styling (New) --- */
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            font-family: 'Asap', sans-serif;
+        }
+        .leaderboard-list li {
+            background-color: #374151;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        .leaderboard-list .rank {
+            font-family: 'Titan One', cursive;
+            color: var(--fg-leaderboard);
+            font-size: 1.25rem;
+            width: 50px;
+            flex-shrink: 0;
+        }
+        .leaderboard-list .name {
+            font-weight: bold;
+            color: white;
+            flex-grow: 1;
+        }
+        .leaderboard-list .score {
+            font-weight: bold;
+            color: var(--fg-yellow);
+        }
+
 
         /* Layout for Mobile */
         @media (max-width: 768px) {
@@ -398,9 +435,18 @@
                         Customize Bean
                     </button>
 
+                    <button id="leaderboardButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-leaderboard); color: white;">
+                        Leaderboard
+                    </button>
+
+                    <button id="watchAdButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-yellow); color: var(--bg-dark);">
+                        Get 100K Free Crowns!
+                    </button>
+                    
                     <button id="rebirthButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4 font-extrabold" style="background-color: rgb(75 85 99); color: white;">
                         MAX ALL UPGRADES (40 remaining)
                     </button>
+
                 </div>
             </div>
 
@@ -439,10 +485,23 @@
         </div>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="https://nu.vgmtreasurechest.com/soundtracks/fall-guys-complete-soundtrack-gamerip-2020/npjdmbvz/1-11.%20Merry%20Falling%2C%20Everybody%21.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <div id="cosmeticsModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--fg-pink);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-pink);">Cosmetics Shop</h3>
+            <p class="text-white mb-4 font-asap">
+                Purchase or equip different styles for your Cosmic Bean!
+            </p>
+            
+            <div id="cosmeticList" class="scrollable-content upgrade-section pr-3 overflow-y-auto text-left" style="max-height: 300px;">
+                </div>
+            
+            <div class="flex justify-center mt-6">
+                <button id="closeCosmeticsModal" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="devConsole" class="modal-overlay hidden" style="z-index: 3000;">
         <div class="modal-content w-11/12 max-w-lg" style="border: 4px solid var(--fg-yellow);">
@@ -469,24 +528,51 @@
         </div>
     </div>
 
-    <div id="cosmeticsModal" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 500px; border-color: var(--fg-pink);">
-            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-pink);">Cosmetics Shop</h3>
+    <div id="leaderboardModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--fg-leaderboard);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-leaderboard);">Rebirth Leaderboard</h3>
             <p class="text-white mb-4 font-asap">
-                Purchase or equip different styles for your Cosmic Bean!
+                Top players by Rebirths. (Please Do NOT Cheat!).
             </p>
             
-            <div id="cosmeticList" class="scrollable-content upgrade-section pr-3 overflow-y-auto text-left" style="max-height: 300px;">
-                </div>
+            <div id="leaderboardListWrapper" class="scrollable-content upgrade-section pr-3 overflow-y-auto text-left" style="max-height: 300px;">
+                <ul id="leaderboardList" class="leaderboard-list">
+                    </ul>
+            </div>
             
             <div class="flex justify-center mt-6">
-                <button id="closeCosmeticsModal" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                <button id="closeLeaderboardModal" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
                     Close
                 </button>
             </div>
         </div>
     </div>
+    
+    <div id="adModal" class="modal-overlay hidden" style="z-index: 2500;">
+        <div class="modal-content" style="border-color: var(--fg-yellow);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-yellow);">Adding Crowns In Progress...</h3>
+            <p class="text-white mb-4 font-asap">
+                Thank you for supporting the game!
+            </p>
+            
+            <div class="text-center my-6">
+                <div class="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin mx-auto"></div>
+                
+                <p class="text-white text-lg mt-4">
+                    Your reward will be granted in:
+                </p>
+                <p id="adTimer" class="text-3xl font-bold" style="color: var(--fg-yellow);">30</p>
+                <p class="text-gray-400 text-sm font-asap">(Please do not close this window)</p>
+            </div>
 
+        </div>
+    </div>
+
+
+    <audio id="bgMusic" loop>
+        <source src="https://lambda.vgmtreasurechest.com/soundtracks/fall-guys-fallin-forever-ost-gamerip-2024/ucdifbpy/03.%20Long%20Wall.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
         // Tone.js library for sound effects and music
@@ -546,6 +632,24 @@
         const MIN_SPAWN_DELAY_S = 25; 
         const MAX_SPAWN_DELAY_S = 45; 
         let giftSpawnTimeout; 
+
+        // --- *** NEW: AD SIMULATION VARIABLES *** ---
+        const AD_REWARD = 100000;
+        const AD_DURATION_S = 120; // 30 seconds
+        let isAdPlaying = false;
+        let adTimerInterval;
+
+        // --- *** NEW: LEADERBOARD DATA (EDIT THIS) *** ---
+        const leaderboardData = [
+            { name: "Shark_Attack", rebirths: 500 },
+            { name: "LWT", rebirths: 322 },
+            { name: "RevsUZB", rebirths: 296 },
+            { name: "JingliaI", rebirths: 141 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 }
+        ];
+        // ---------------------------------------------------
 
         // Upgrades 
         const upgradeData = {
@@ -669,6 +773,18 @@
         const crownsInput = document.getElementById('crownsInput');
         const addCrownsButton = document.getElementById('addCrownsButton');
         const spawnGiftButton = document.getElementById('spawnGiftButton'); 
+
+        // --- *** NEW DOM ELEMENTS *** ---
+        // Leaderboard
+        const leaderboardButton = document.getElementById('leaderboardButton');
+        const leaderboardModal = document.getElementById('leaderboardModal');
+        const closeLeaderboardModal = document.getElementById('closeLeaderboardModal');
+        const leaderboardList = document.getElementById('leaderboardList');
+        // Simulated Ad
+        const watchAdButton = document.getElementById('watchAdButton');
+        const adModal = document.getElementById('adModal');
+        const adTimer = document.getElementById('adTimer');
+        
         // --- UTILITY FUNCTIONS ---
 
         function formatNumber(num) {
@@ -829,7 +945,7 @@
                 if (isToneLoaded) titleToggleSynth.triggerAttackRelease("C4", "8n"); 
             } else {
                 eyeOpenIcon.classList.remove('hidden');
-                eyeClosedIcon.classList.add('hidden');
+                eyeClosedIcon.add('hidden');
                 if (isToneLoaded) titleToggleSynth.triggerAttackRelease("G4", "8n"); 
             }
         }
@@ -934,6 +1050,85 @@
                 } catch (e) { console.error("Tone error on gift collect:", e); }
             }
         }
+
+        // --- *** NEW: SIMULATED AD LOGIC *** ---
+        function startAdSimulation() {
+            if (isAdPlaying) return;
+
+            isAdPlaying = false;
+            watchAdButton.disabled = true;
+            watchAdButton.textContent = "Just Wait...";
+            watchAdButton.style.opacity = '0.6';
+
+            adModal.classList.remove('hidden');
+            
+            let timeLeft = AD_DURATION_S;
+            adTimer.textContent = timeLeft;
+
+            adTimerInterval = setInterval(() => {
+                timeLeft--;
+                adTimer.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(adTimerInterval);
+                    
+                    // Grant Reward
+                    kudos += AD_REWARD;
+                    totalKudosEarned += AD_REWARD;
+                    updateDisplay();
+                    saveGame();
+                    
+                    // Play sound
+                    if (isToneLoaded) {
+                        try {
+                            upgradeSynth.triggerAttackRelease(["C5", "E5", "G5"], "4n"); 
+                        } catch (e) { console.error("Tone error on ad reward:", e); }
+                    }
+
+                    // Reset UI
+                    adModal.classList.add('hidden');
+                    isAdPlaying = false;
+                    watchAdButton.disabled = true;
+                    watchAdButton.textContent = "Get 100k Crowns";
+                    watchAdButton.style.opacity = '1';
+
+                    showNotification(`+${formatNumber(AD_REWARD)} Crowns for watching!`, 3000);
+                }
+            }, 1000);
+        }
+
+        // --- *** NEW: LEADERBOARD LOGIC *** ---
+        function openLeaderboardModal() {
+            leaderboardList.innerHTML = ''; // Clear previous list
+
+            // Sort data by rebirths descending
+            const sortedData = [...leaderboardData].sort((a, b) => b.rebirths - a.rebirths);
+
+            sortedData.forEach((player, index) => {
+                const li = document.createElement('li');
+                
+                let rankDisplay;
+                if (index === 0) {
+                    rankDisplay = '🥇'; // Gold
+                } else if (index === 1) {
+                    rankDisplay = '🥈'; // Silver
+                } else if (index === 2) {
+                    rankDisplay = '🥉'; // Bronze
+                } else {
+                    rankDisplay = `#${index + 1}`;
+                }
+
+                li.innerHTML = `
+                    <span class="rank">${rankDisplay}</span>
+                    <span class="name">${player.name}</span>
+                    <span class="score">${formatNumber(player.rebirths)} Rebirths</span>
+                `;
+                leaderboardList.appendChild(li);
+            });
+
+            leaderboardModal.classList.remove('hidden');
+        }
+
 
         // --- GAME LOGIC FUNCTIONS ---
 
@@ -1417,6 +1612,14 @@
             cosmeticsButton.addEventListener('click', openCosmeticsModal);
             closeCosmeticsModal.addEventListener('click', () => cosmeticsModal.classList.add('hidden'));
 
+            // --- *** NEW EVENT LISTENERS *** ---
+            // Leaderboard
+            leaderboardButton.addEventListener('click', openLeaderboardModal);
+            closeLeaderboardModal.addEventListener('click', () => leaderboardModal.classList.add('hidden'));
+            // Simulated Ad
+            watchAdButton.addEventListener('click', startAdSimulation);
+            // --- *************************** ---
+
             // Console Listeners
             addCrownsButton.addEventListener('click', addKudosCheat);
             spawnGiftButton.addEventListener('click', () => {
@@ -1430,7 +1633,7 @@
                 }
             });
             document.addEventListener('keydown', (event) => {
-                if (event.DISABLEDaltKey) {
+                if (event.DISABLEDaltKey) { // Note: I'm keeping your original (but likely incorrect 'DISABLEDaltKey') logic. If you meant Alt + \, change this.
                     event.preventDefault(); 
                     if (rebirthModal.classList.contains('hidden')) {
                         toggleDevConsole();
