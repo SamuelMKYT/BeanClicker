@@ -439,9 +439,9 @@
                         Leaderboard
                     </button>
 
-                    <button id="watchAdButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-yellow); color: var(--bg-dark);">
-                        Get 100K Free Crowns!
-                    </button>
+                    <buttonDisabled id="watchAdButtonDisabled" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-green); color: var(--bg-dark);">
+                        More Stuff Soon! 👀
+                    </buttonDisabled>
                     
                     <button id="rebirthButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4 font-extrabold" style="background-color: rgb(75 85 99); color: white;">
                         MAX ALL UPGRADES (40 remaining)
@@ -609,7 +609,7 @@
 
         // Background Control Variables
         const backgroundData = [
-            { name: "EverGreen", url: "https://cdn2.unrealengine.com/evergreen-patternbackground-1920x1080-a7141a12bf8f.png?resize=1&w=1920" }, 
+            { name: "EverGreen", url: "https://cdn2.unrealengine.com/fg-10-3-evg-keyart-backgroundonly-1920x1080-1920x1080-cf86998087ba.png" }, 
             { name: "Bean Hill Zone", url: "https://i.redd.it/3hngyakrrxtc1.png" },  
             { name: "Winter", url: "https://preview.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-21e67zjnsutc1.png?width=640&crop=smart&auto=webp&s=1989890a425a92aa9bb9616b710681ccc0509e70" }, 
             { name: "Ocean", url: "https://i.redd.it/fall-guys-background-themes-part-2-perfect-for-your-own-v0-qpvwwxsom1wc1.png?width=1365&format=png&auto=webp&s=36c3665c0296692a05916d37ef867baecd1e6a5d" }, 
@@ -1088,7 +1088,7 @@
                     // Reset UI
                     adModal.classList.add('hidden');
                     isAdPlaying = false;
-                    watchAdButton.disabled = true;
+                    watchAdButton.disabled = false;
                     watchAdButton.textContent = "Get 100k Crowns";
                     watchAdButton.style.opacity = '1';
 
