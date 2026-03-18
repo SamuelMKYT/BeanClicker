@@ -3,1300 +3,1804 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bean Clicker: Ultimate Knockout Edition</title>
+    <title>Bean Clicker!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. CORE VARIABLES & THEME --- */
+        /* Custom styles for the polished look */
+
         :root {
-            /* Fall Guys Palette */
-            --fg-yellow: #FFC629; 
-            --fg-pink: #FF4081;  
-            --fg-blue: #3CCBF4;  
-            --fg-mint: #00E6CC;
-            --fg-purple: #8C52FF;
-            --fg-dark: #1F1147;  
-            --fg-white: #FFFFFF;
-            
-            --bg-gradient-top: #36096d;
-            --bg-gradient-bottom: #37d5d6;
-
-            /* Scrollbar */
+            /* Fall Guys Inspired Colors */
+            --fg-yellow: #ffeb3b; /* Bright Yellow */
+            --fg-pink: #e91e63;  /* Bright Pink */
+            --fg-blue: #2196f3;  /* Bright Blue */
+            --bg-dark: #1e3a8a;  /* Deep Blue/Purple background */
+            /* Scrollbar Colors */
             --scroll-thumb: var(--fg-pink);
-            --scroll-track: rgba(0,0,0,0.3);
-
-            /* Rebirth & Leaderboard */
-            --fg-rebirth: #00E5FF; 
-            --fg-leaderboard: #FF9E1B;
+            --scroll-track: #374151; /* Darker grey */
+            /* Rebirth Colors (New) */
+            --fg-rebirth: #00bcd4; /* Cyan/Teal for Rebirth */
+            /* Leaderboard Colors (New) */
+            --fg-leaderboard: #ff9800; /* Orange */
         }
 
-        /* --- 2. ANIMATIONS --- */
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.5) rotate(15deg); opacity: 0; }
-        }
-
-        @keyframes wobble {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg) scale(0.95); }
-            50% { transform: rotate(5deg) scale(1.05); }
-            75% { transform: rotate(-5deg) scale(0.95); }
-            100% { transform: rotate(0deg); }
-        }
-
-        @keyframes jelly {
-            0% { transform: scale(1, 1); }
-            30% { transform: scale(1.25, 0.75); }
-            40% { transform: scale(0.75, 1.25); }
-            50% { transform: scale(1.15, 0.85); }
-            65% { transform: scale(0.95, 1.05); }
-            75% { transform: scale(1.05, 0.95); }
-            100% { transform: scale(1, 1); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes hexagon-pan {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        @keyframes qualify-flash {
-            0% { background-color: rgba(255, 255, 255, 0); }
-            50% { background-color: rgba(255, 255, 255, 0.5); }
-            100% { background-color: rgba(255, 255, 255, 0); }
-        }
-        
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(255, 198, 41, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 198, 41, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 198, 41, 0); }
-        }
-
-        /* --- 3. GENERAL STYLES --- */
+        /* --- BODY & CONTAINER --- */
         body {
             font-family: 'Titan One', cursive;
-            background-color: var(--fg-dark);
-            /* Fall Guys Hexagon Pattern Simulation */
-            background-image: 
-                linear-gradient(30deg, #1F1147 12%, transparent 12.5%, transparent 87%, #1F1147 87.5%, #1F1147),
-                linear-gradient(150deg, #1F1147 12%, transparent 12.5%, transparent 87%, #1F1147 87.5%, #1F1147),
-                linear-gradient(30deg, #1F1147 12%, transparent 12.5%, transparent 87%, #1F1147 87.5%, #1F1147),
-                linear-gradient(150deg, #1F1147 12%, transparent 12.5%, transparent 87%, #1F1147 87.5%, #1F1147),
-                linear-gradient(60deg, #2a1b5c 25%, transparent 25.5%, transparent 75%, #2a1b5c 75%, #2a1b5c),
-                linear-gradient(60deg, #2a1b5c 25%, transparent 25.5%, transparent 75%, #2a1b5c 75%, #2a1b5c);
-            background-size: 80px 140px;
-            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
-            animation: hexagon-pan 60s linear infinite;
-            
+            background-color: var(--bg-dark);
+            background-image: url('https://cdn2.unrealengine.com/evergreen-patternbackground-1920x1080-a7141a12bf8f.png?resize=1&w=1920');
+            background-repeat: no-repeat;
+            background-size: cover; 
+            background-attachment: fixed; 
+            transition: background-image 0.5s ease-in-out; 
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Prevent scroll on body, handle inside container */
+            overflow: auto;
             color: white;
-            padding: 10px;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            padding: 20px;
+            /* Disable Text Selection (Anti-Highlighting) */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+ */
+            user-select: none; /* Standard */
         }
 
         .game-container {
             width: 100%;
-            max-width: 1100px;
-            height: 95vh;
-            background: rgba(31, 17, 71, 0.85);
-            backdrop-filter: blur(10px);
-            border: 6px solid var(--fg-white);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.5);
-            border-radius: 30px;
+            max-width: 900px;
+            background-color: var(--bg-dark); 
+            border: 4px solid var(--fg-pink);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
         }
-
-        /* --- 4. TEXT & STATS --- */
+        
+        /* --- TITLE COLLAPSE FIX (New Styles for H1 Wrapper) --- */
         .title-text-wrapper {
-            max-width: 600px; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin: 0 auto;
+            /* Set a generous max-width and initial spacing */
+            max-width: 500px; 
+            opacity: 1;
+            overflow: hidden;
+            margin-right: 1rem; 
+            /* Smooth transition for collapsing the space it takes */
+            transition: max-width 0.3s ease-in-out, opacity 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+            /* Ensure the H1 is centered within its wrapper */
+            display: flex; 
+            justify-content: center;
         }
+
         .title-text-collapsed {
-            transform: scale(0);
-            height: 0;
-            margin: 0;
+            max-width: 0 !important;
+            opacity: 0 !important;
+            margin-right: 0 !important;
         }
 
-        h1 {
-            text-shadow: 4px 4px 0px #000;
-            -webkit-text-stroke: 2px black;
-            font-size: 3rem;
-            letter-spacing: 2px;
-        }
-
-        .stat-panel {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 20px;
-            padding: 10px;
-            border: 3px solid rgba(255,255,255,0.1);
-            transition: transform 0.2s;
-        }
-        .stat-panel:hover {
-            transform: translateY(-2px);
-            border-color: var(--fg-white);
-        }
-
-        .stat-value {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2rem;
+        /* --- TITLE & TEXT --- */
+        .game-container h1 {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             color: var(--fg-yellow);
-            text-shadow: 2px 2px 0px #000;
-            line-height: 1.1;
+            white-space: nowrap; /* Prevent wrapping during collapse */
         }
-        .stat-label {
+        
+        .stat-value {
+            font-size: 2.5rem;
+            color: var(--fg-yellow);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            line-height: 1;
+        }
+        .font-asap {
             font-family: 'Asap', sans-serif;
-            font-weight: 700;
-            color: #ccc;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
         }
 
-        /* --- 5. THE BEAN (Redesigned) --- */
+        /* --- CORE BEAN (RED/PINK) --- */
         #aetherCore {
-            width: 220px;
-            height: 220px;
-            /* Default Pink Bean */
-            background: radial-gradient(circle at 30% 30%, #ff80ab 0%, #e91e63 60%, #880e4f 100%);
-            border: 6px solid #000;
-            box-shadow: 0 15px 0px rgba(0,0,0,0.3);
-            border-radius: 45% 45% 40% 40% / 55% 55% 45% 45%; /* Bean Shape */
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ff6e96 40%, #e91e63 80%, #d81b60 100%);
+            border: 4px solid var(--fg-yellow);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(233, 30, 99, 0.4); 
+            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.05s ease-in-out; 
-            margin: 10px auto;
+            transition: transform 0.1s ease-out, background 0.3s ease; /* Added background transition */
+            margin: 20px auto;
             position: relative;
-            z-index: 10;
         }
+        
+        /* --- NEW ANIMATED COSMETIC STYLING --- */
+        @keyframes rainbow-flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .cosmetic-rainbow {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            background-size: 400% 400%; /* Make the gradient huge so it can move */
+            animation: rainbow-flow 5s linear infinite alternate; /* 'alternate' makes it go back and forth */
+        }
+        
+        @keyframes galaxy-swirl {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .cosmetic-galaxy {
+            background: linear-gradient(90deg, #0f0c29, #302b63, #24243e, #0f0c29);
+            background-size: 400% 400%;
+            animation: galaxy-swirl 10s linear infinite alternate;
+        }
+        /* --- End of new styles --- */
         
         #aetherCore:active {
-            transform: scale(0.92) translateY(5px);
-            box-shadow: 0 5px 0px rgba(0,0,0,0.3);
+            transform: scale(0.95);
         }
-
-        /* The Faceplate */
-        .bean-face {
-            width: 120px;
-            height: 90px;
-            background: white;
-            border-radius: 40% 40% 50% 50% / 50% 50% 60% 60%;
-            position: absolute;
-            top: 25%;
-            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
-            border: 3px solid rgba(0,0,0,0.1);
-        }
-        .bean-eyes {
-            display: flex;
-            justify-content: space-between;
-            width: 50px;
-            position: absolute;
-            top: 35%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .eye {
-            width: 12px;
-            height: 18px;
-            background: black;
-            border-radius: 50%;
-        }
-
-        /* --- 6. PARTICLES --- */
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
-            z-index: 20;
-            font-family: 'Titan One', cursive;
-            font-weight: bold;
-            text-shadow: 2px 2px 0 #000;
-        }
-        .particle-confetti {
-            width: 10px;
-            height: 10px;
-            position: absolute;
-            pointer-events: none;
-        }
-
-        /* --- 7. UPGRADE CARDS & SHOP --- */
-        .shop-container {
-            background: rgba(0,0,0,0.2);
-            border-radius: 20px;
-            padding: 15px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tab-nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 8px;
-            border-radius: 12px;
-            border: none;
-            font-family: 'Titan One', cursive;
-            color: white;
-            background: #374151;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-shadow: 1px 1px 0 #000;
-        }
-        .tab-btn.active {
-            background: var(--fg-pink);
-            transform: scale(1.05);
-            box-shadow: 0 5px 0 #ad1457;
-        }
-        .tab-btn:hover:not(.active) {
-            background: #4b5563;
-        }
-
-        .upgrade-list-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .upgrade-card {
-            background: linear-gradient(90deg, #2c3e50, #34495e);
-            border: 4px solid white;
-            border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 12px;
-            position: relative;
-            transition: all 0.2s;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .upgrade-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 rgba(0,0,0,0.3);
-        }
-        .upgrade-card.disabled {
-            opacity: 0.6;
-            filter: grayscale(0.8);
-            border-color: #555;
-            cursor: not-allowed;
+        #aetherCore svg circle {
+            fill: #fff;
+            transition: fill 0.3s;
         }
         
-        .cost-btn {
+        /* --- Gift Box Styling (NEW) --- */
+        #giftBox {
+            position: absolute; /* Positioned relative to .core-section */
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 50; /* Above the core and controls */
+            transition: transform 0.1s ease-out, opacity 0.3s;
+            opacity: 0;
+            border-radius: 8px;
+            padding: 5px;
             background-color: var(--fg-yellow);
-            color: #000;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-family: 'Fredoka One', cursive;
-            border: 2px solid #000;
-            box-shadow: 0 4px 0 #000;
-            transition: all 0.1s;
-        }
-        .cost-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
         }
 
-        /* --- 8. FAME PATH (SEASON PASS) --- */
-        .fame-path-container {
-            background: #1e1e1e;
-            border: 3px solid var(--fg-purple);
-            border-radius: 15px;
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 10px;
+        #giftBox:hover {
+            transform: scale(1.1) rotate(5deg);
         }
-        .fame-bar-bg {
-            height: 25px;
-            background: #000;
-            border-radius: 12px;
+        
+        #giftBox:active {
+            transform: scale(0.95);
+        }
+
+        /* --- UTILITY ANIMATIONS & STYLING --- */
+        @keyframes popOff {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .pop-off {
+            animation: popOff 0.15s ease-out;
+        }
+        
+        /* Scrollbar Styling */
+        .scrollable-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        .scrollable-content::-webkit-scrollbar-track {
+            background: var(--scroll-track);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: var(--scroll-thumb);
+            border-radius: 10px;
+            border: 2px solid var(--bg-dark);
+            transition: background 0.2s;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: #ff4081;
+        }
+        .scrollable-content::-webkit-scrollbar-button {
+            display: none;
+        }
+        
+        /* --- Upgrade Card Styling (FIXED by removing transform) --- */
+        .upgrade-card {
+            background-color: #4b5563;
+            border: 1px solid var(--fg-blue);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+            cursor: pointer;
             position: relative;
-            overflow: hidden;
-            border: 2px solid white;
         }
-        .fame-bar-fill {
-            height: 100%;
-            background: repeating-linear-gradient(
-                45deg,
-                var(--fg-purple),
-                var(--fg-purple) 10px,
-                #9d6bffe8 10px,
-                #9d6bffe8 20px
-            );
-            width: 0%;
-            transition: width 0.5s ease-out;
+
+        .upgrade-card:hover {
+            /* Animation removed as requested, leaving only the shadow effect */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
         }
-        .fame-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            margin-top: 5px;
+
+        .upgrade-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .upgrade-card .cost-btn {
+            background-color: var(--fg-pink);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: 700;
+            transition: background-color 0.2s;
+        }
+
+        .upgrade-card:not(.disabled) .cost-btn:hover {
+            background-color: #ff4081;
+        }
+
+        .upgrade-description {
             font-family: 'Asap', sans-serif;
-            font-weight: bold;
+            font-size: 0.85rem;
+            color: #a0a0a0;
         }
-
-        /* --- 9. MODALS & OVERLAYS --- */
-        .modal-overlay {
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            border: 6px solid white;
-            box-shadow: 0 20px 0 rgba(0,0,0,0.4);
-            transform: scale(0.9);
-            animation: jelly 0.5s forwards;
-        }
-
-        /* --- 10. QUALIFIED BANNER --- */
-        #qualifiedBanner {
+        
+        /* --- Notification Styling (New) --- */
+        .notification-box {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 100%;
-            background: linear-gradient(90deg, transparent, var(--fg-pink), transparent);
-            text-align: center;
-            z-index: 9999;
-            pointer-events: none;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #qualifiedBanner h1 {
-            font-size: 6rem;
-            color: var(--fg-yellow);
-            -webkit-text-stroke: 4px black;
-            text-shadow: 8px 8px 0 rgba(0,0,0,0.3);
-            margin: 0;
-            padding: 20px;
-        }
-
-        /* --- 11. ROUND START POPUP --- */
-        .round-popup {
-            position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--fg-blue);
-            padding: 15px 30px;
-            border-radius: 15px;
-            border: 4px solid white;
-            box-shadow: 0 8px 0 rgba(0,0,0,0.3);
+            background-color: var(--fg-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 1000;
-            display: none;
-            animation: slideIn 0.5s ease-out;
+            opacity: 1;
+            transition: opacity 0.5s ease-out, transform 0.3s ease-out;
+            font-family: 'Asap', sans-serif;
+            font-weight: bold;
+            border: 2px solid var(--fg-yellow);
         }
 
-        /* Scrollbar Styling Override */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); border-radius: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 5px; border: 2px solid transparent; background-clip: content-box; }
-        ::-webkit-scrollbar-thumb:hover { background-color: var(--fg-yellow); }
+        .notification-box.fade-out {
+            opacity: 0;
+        }
+        
+        /* --- Modal Styling (New) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background-color: var(--bg-dark);
+            border: 4px solid var(--fg-rebirth);
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            font-family: 'Asap', sans-serif;
+        }
+        
+        /* --- Leaderboard Styling (New) --- */
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            font-family: 'Asap', sans-serif;
+        }
+        .leaderboard-list li {
+            background-color: #374151;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        .leaderboard-list .rank {
+            font-family: 'Titan One', cursive;
+            color: var(--fg-leaderboard);
+            font-size: 1.25rem;
+            width: 50px;
+            flex-shrink: 0;
+        }
+        .leaderboard-list .name {
+            font-weight: bold;
+            color: white;
+            flex-grow: 1;
+        }
+        .leaderboard-list .score {
+            font-weight: bold;
+            color: var(--fg-yellow);
+        }
 
-        /* Media Queries */
+
+        /* Layout for Mobile */
         @media (max-width: 768px) {
-            .game-container { padding: 10px; height: 100vh; border-radius: 0; border: none; }
-            .game-grid { flex-direction: column; overflow-y: auto; }
-            #aetherCore { width: 160px; height: 160px; }
-            h1 { font-size: 2rem; }
-            .stat-value { font-size: 1.5rem; }
-            .shop-section { margin-top: 20px; }
-            .fame-path-container { display: none; /* Hide pass on tiny screens to save space */ }
+            .game-grid {
+                flex-direction: column;
+            }
+            .upgrade-section {
+                max-height: 350px;
+            }
+        }
+        /* Layout for Desktop/Large Screens */
+        @media (min-width: 768px) {
+            .upgrade-section {
+                max-height: 50vh;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="qualifiedBanner">
-        <h1>QUALIFIED!</h1>
-    </div>
-
-    <div id="roundPopup" class="round-popup text-center">
-        <h3 class="text-xl font-bold text-white mb-1">ROUND STARTING!</h3>
-        <p id="roundName" class="font-asap text-sm text-black font-bold bg-white px-2 rounded">Door Dash</p>
-    </div>
-
     <div class="game-container">
         
-        <div class="flex items-center justify-between mb-2 z-20 relative">
-            <button id="titleToggleButton" class="p-2 bg-white/10 rounded-full hover:bg-white/20 transition">
-                 <svg id="eyeOpenIcon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-            </button>
+        <div class="flex items-center justify-center mb-6">
             
-            <div id="titleTextWrapper" class="title-text-wrapper text-center">
-                <h1 id="gameTitle" style="color:var(--fg-yellow);">BEAN CLICKER</h1>
-                <p class="text-white text-sm font-asap tracking-widest opacity-80">ULTIMATE KNOCKOUT</p>
+            <div id="titleTextWrapper" class="title-text-wrapper">
+                <h1 id="gameTitle" class="text-3xl md:text-4xl font-extrabold" style="color:var(--fg-yellow);">
+                    BEAN CLICKER
+                </h1>
             </div>
 
-            <button id="settingsBtn" class="p-2 bg-white/10 rounded-full hover:bg-white/20 transition">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <button id="titleToggleButton" class="p-2 rounded-full transition-colors duration-150 hover:bg-white/20 active:bg-white/30" 
+                    style="background-color: rgba(255, 255, 255, 0.1);"
+                    title="Toggle Title Visibility">
+                <svg id="eyeOpenIcon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <svg id="eyeClosedIcon" class="w-6 h-6 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064 7 9.542 7A9.957 9.957 0 0118 10"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a3 3 0 100-6 3 3 0 000 6z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-6 6"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16l-4 4"></path>
+                </svg>
             </button>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 z-20 relative">
-            <div class="stat-panel text-center">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 border-b border-t border-gray-700 py-3">
+            <div class="stat-display text-center col-span-2 md:col-span-1">
                 <div id="kudosCount" class="stat-value">0</div>
-                <div class="stat-label">CROWNS</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">CROWNS EARNED</div>
             </div>
-            <div class="stat-panel text-center">
-                <div id="clickPowerDisplay" class="stat-value text-pink-400">1</div>
-                <div class="stat-label">PUNCH POWER</div>
+            <div class="stat-display text-center">
+                <div id="clickPowerDisplay" class="stat-value">1</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">CROWNS PER PUNCH</div>
             </div>
-            <div class="stat-panel text-center">
-                <div id="passiveRateDisplay" class="stat-value text-cyan-400">0</div>
-                <div class="stat-label">SLIME RATE (C/s)</div>
+            <div class="stat-display text-center">
+                <div id="passiveRateDisplay" class="stat-value">0</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">PASSIVE SLIME (C/sec)</div>
             </div>
-             <div class="stat-panel text-center border-cyan-500">
+             <div class="stat-display text-center">
                 <div id="rebirthMultiplierDisplay" class="stat-value" style="color:var(--fg-rebirth);"><span id="multiplierValue">x1.000</span></div>
-                <div class="stat-label">MULTIPLIER</div>
+                <div class="stat-label text-sm text-gray-400 mt-1">REBIRTH MULTIPLIER</div>
             </div>
         </div>
 
-        <div class="fame-path-container z-20 relative hidden md:block">
-            <div class="flex justify-between items-end mb-1">
-                <span class="text-white font-bold font-asap">SEASON 1: LEGACY</span>
-                <span class="text-yellow-400 font-bold font-asap" id="fameLevelDisplay">LVL 1</span>
-            </div>
-            <div class="fame-bar-bg">
-                <div id="fameBarFill" class="fame-bar-fill"></div>
-            </div>
-            <div class="fame-info">
-                <span class="text-gray-400" id="fameNextReward">Next: 100 Crowns</span>
-                <span class="text-gray-400" id="fameProgressText">0 / 500 XP</span>
-            </div>
-        </div>
-
-        <div class="game-grid flex flex-col md:flex-row gap-6 flex-grow overflow-hidden relative z-10">
+        <div class="game-grid flex flex-col md:flex-row gap-6">
             
-            <div class="core-section md:w-5/12 flex flex-col items-center justify-center relative">
+            <div class="core-section md:w-1/2 flex flex-col items-center" style="position: relative;">
                 
-                <div id="giftBox" style="opacity: 0; display: none; position: absolute; z-index: 50; width: 60px; height: 60px; cursor: pointer; transition: transform 0.2s;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Gift_Flat_Icon_Vector.svg/1200px-Gift_Flat_Icon_Vector.svg.png" alt="Gift" class="w-full h-full drop-shadow-xl animate-bounce">
+                <div id="giftBox" style="opacity: 0; display: none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Gift_Flat_Icon_Vector.svg/1200px-Gift_Flat_Icon_Vector.svg.png" alt="Gift Icon" class="w-full h-full">
                 </div>
 
                 <div id="aetherCore" title="Click to Punch!">
-                   <div class="bean-face"></div>
-                   <div class="bean-eyes">
-                       <div class="eye"></div>
-                       <div class="eye"></div>
-                   </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-2/3 h-2/3">
+                        <circle cx="50" cy="50" r="48" fill="#fff"/>
+                        <ellipse cx="38" cy="45" rx="10" ry="15" fill="black"/>
+                        <ellipse cx="62" cy="45" rx="10" ry="15" fill="black"/>
+                    </svg>
+                    <div id="blockOverlay" class="hidden absolute inset-0 bg-black/80 rounded-full flex flex-col items-center justify-center text-red-500 text-center">
+                        <div class="text-6xl mb-1">X</div>
+                        <span id="countdownDisplay" class="font-bold">3.0s</span>
+                        <span class="text-xs font-asap mt-1">Auto-Click Detected</span>
+                    </div>
                 </div>
+                <p class="text-sm text-gray-400 mt-2 font-asap">Punch the Cosmic Bean to manually generate Crowns.</p>
                 
-                <div id="blockOverlay" class="hidden absolute inset-0 bg-black/80 rounded-3xl flex flex-col items-center justify-center text-red-500 text-center z-50">
-                    <div class="text-6xl mb-1">ELIMINATED!</div>
-                    <span id="countdownDisplay" class="font-bold text-white text-2xl">3.0s</span>
-                    <span class="text-xs font-asap mt-1 text-white">Slow down, Speedrunner!</span>
-                </div>
-
-                <p class="text-sm text-gray-300 mt-6 font-asap text-center bg-black/30 px-4 py-2 rounded-lg">
-                    Punch the Bean to earn Crowns!<br>Unlock cosmetics to look stylish.
-                </p>
-                
-                <div class="flex gap-2 mt-4 w-full px-4">
-                    <button id="rebirthButton" class="cost-btn flex-1 text-xs py-3 font-extrabold bg-gray-600 text-white border-gray-400">
-                        MAX UPGRADES
-                    </button>
-                    <button id="watchAdButton" class="cost-btn flex-1 text-xs py-3 bg-purple-600 text-white border-purple-800">
-                        FREE CROWNS (AD)
-                    </button>
-                </div>
-
-            </div>
-
-            <div class="shop-section md:w-7/12 flex flex-col h-full overflow-hidden">
-                <div class="shop-container">
+                <div class="control-panel mt-4 p-3 rounded-lg w-full max-w-xs flex flex-col items-center" 
+                     style="background-color: rgba(0,0,0,0.3); border: 2px solid var(--fg-yellow);">
                     
-                    <div class="tab-nav">
-                        <button class="tab-btn active" data-tab="upgrades">UPGRADES</button>
-                        <button class="tab-btn" data-tab="squads">SQUADS</button>
-                        <button class="tab-btn" data-tab="cosmetics">WARDROBE</button>
-                        <button class="tab-btn" data-tab="leaderboard">TOP BEANS</button>
+                    <div class="w-full mb-3 px-2">
+                        <label for="sfxVolumeSlider" class="text-sm text-white font-asap block mb-1">SFX Volume</label>
+                        <input type="range" id="sfxVolumeSlider" min="0" max="100" value="70" class="w-full">
                     </div>
 
-                    <div id="shopContent" class="upgrade-list-container scrollable-content">
-                        </div>
+                    <div class="w-full mb-3 px-2">
+                        <label for="bgmVolumeSlider" class="text-sm text-white font-asap block mb-1">BGM Volume</label>
+                        <input type="range" id="bgmVolumeSlider" min="0" max="100" value="40" class="w-full">
+                    </div>
+                    
+                    <button id="bgChangeButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-blue); color: white;">
+                        Change Background
+                    </button>
+                    
+                    <button id="cosmeticsButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-pink); color: white;">
+                        Customize Bean
+                    </button>
+
+                    <button id="leaderboardButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-leaderboard); color: white;">
+                        Leaderboard
+                    </button>
+
+                    <buttonDisabled id="watchAdButtonDisabled" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4" style="background-color: var(--fg-green); color: var(--bg-dark);">
+                        More Stuff Soon! 👀
+                    </buttonDisabled>
+                    
+                    <button id="rebirthButton" class="cost-btn mt-3 text-center rounded-lg py-2 w-full px-4 font-extrabold" style="background-color: rgb(75 85 99); color: white;">
+                        MAX ALL UPGRADES (40 remaining)
+                    </button>
 
                 </div>
             </div>
 
+            <div class="shop-section md:w-1/2 flex flex-col">
+                <h2 class="text-2xl font-bold mb-4" style="color:var(--fg-pink);">Shop!</h2>
+                <div id="upgradeList" class="scrollable-content upgrade-section pr-3 overflow-y-auto">
+                    </div>
+            </div>
+
         </div>
 
-        <div class="text-center mt-2 relative z-20">
-            <p class="text-xs text-gray-400 font-asap">
-                Bean Clicker 2026 | Ultimate Knockout Edition | v1.2
+        <div class="text-center mt-6">
+            <p class="text-xs text-gray-500 font-asap">
+                Version: Stable 0.4 | Made by: SamuelMK
             </p>
         </div>
 
     </div>
 
-    <div id="settingsModal" class="modal-overlay fixed inset-0 bg-black/70 hidden z-[3000] flex justify-center items-center">
-        <div class="modal-content bg-[#1F1147] w-11/12 max-w-md p-6 rounded-2xl text-center">
-            <h3 class="text-2xl font-extrabold mb-4 text-white">SETTINGS</h3>
-            
-            <div class="mb-4 text-left">
-                <label class="text-white font-asap text-sm block mb-1">Music Volume</label>
-                <input type="range" id="bgmVolumeSlider" min="0" max="100" value="30" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
-            </div>
-            
-            <div class="mb-6 text-left">
-                <label class="text-white font-asap text-sm block mb-1">SFX Volume</label>
-                <input type="range" id="sfxVolumeSlider" min="0" max="100" value="60" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
-            </div>
-            
-            <button id="bgChangeButton" class="w-full cost-btn mb-3 bg-blue-500 text-white">Change Hex Pattern</button>
-            <button id="closeSettings" class="w-full cost-btn bg-red-500 text-white">Close</button>
-        </div>
-    </div>
-
-    <div id="rebirthModal" class="modal-overlay fixed inset-0 bg-black/80 hidden z-[4000] flex justify-center items-center">
-        <div class="modal-content bg-gradient-to-br from-cyan-900 to-blue-900 w-11/12 max-w-lg p-8 rounded-2xl text-center border-cyan-400">
-            <h3 class="text-3xl font-extrabold mb-4" style="color:var(--fg-rebirth); -webkit-text-stroke: 1px black;">PRESTIGE!</h3>
-            <p class="text-white mb-6 font-asap">
-                Reset your progress to gain a permanent multiplier?
+    <div id="rebirthModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-rebirth);">REBIRTH NOW!</h3>
+            <p class="text-white mb-4">
+                You are about to reset your Crowns, Upgrades, and Passive Rate in exchange for a permanent multiplier.
             </p>
-            <div id="rebirthDetails" class="bg-black/40 p-4 rounded-lg mb-6 text-lg font-bold text-white">
+            <div id="rebirthDetails" class="text-lg font-bold mb-6" style="color:var(--fg-yellow);">
                 </div>
-            <div class="flex gap-4 justify-center">
-                <button id="confirmRebirth" class="cost-btn px-8 bg-cyan-400 text-black border-cyan-600 text-xl">
-                    DO IT!
+            <div class="flex justify-around">
+                <button id="confirmRebirth" class="cost-btn px-6 py-2 text-white font-bold rounded-md" style="background-color: var(--fg-rebirth);">
+                    Confirm Reset
                 </button>
-                <button id="cancelRebirth" class="cost-btn px-8 bg-gray-500 text-white border-gray-700">
-                    NO!
+                <button id="cancelRebirth" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                    Cancel
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="doorDashModal" class="modal-overlay fixed inset-0 bg-black/90 hidden z-[5000] flex justify-center items-center">
-        <div class="modal-content bg-pink-600 w-11/12 max-w-2xl p-6 rounded-2xl text-center border-white">
-            <h2 class="text-4xl font-titan text-white mb-2 shadow-text">DOOR DASH</h2>
-            <p class="text-white mb-6 font-asap font-bold">Pick the real door for a HUGE reward!</p>
+    <div id="cosmeticsModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--fg-pink);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-pink);">Cosmetics Shop</h3>
+            <p class="text-white mb-4 font-asap">
+                Purchase or equip different styles for your Cosmic Bean!
+            </p>
             
-            <div class="grid grid-cols-3 gap-4 mb-6">
-                <div class="door-card cursor-pointer transform hover:scale-105 transition-all" onclick="pickDoor(0)">
-                    <div class="h-32 bg-orange-400 border-4 border-orange-600 rounded-lg flex items-center justify-center">
-                        <span class="text-4xl">🚪</span>
-                    </div>
+            <div id="cosmeticList" class="scrollable-content upgrade-section pr-3 overflow-y-auto text-left" style="max-height: 300px;">
                 </div>
-                <div class="door-card cursor-pointer transform hover:scale-105 transition-all" onclick="pickDoor(1)">
-                    <div class="h-32 bg-orange-400 border-4 border-orange-600 rounded-lg flex items-center justify-center">
-                        <span class="text-4xl">🚪</span>
-                    </div>
-                </div>
-                <div class="door-card cursor-pointer transform hover:scale-105 transition-all" onclick="pickDoor(2)">
-                    <div class="h-32 bg-orange-400 border-4 border-orange-600 rounded-lg flex items-center justify-center">
-                        <span class="text-4xl">🚪</span>
-                    </div>
-                </div>
+            
+            <div class="flex justify-center mt-6">
+                <button id="closeCosmeticsModal" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                    Close
+                </button>
             </div>
-            <div id="doorResult" class="h-8 font-bold text-yellow-300 text-xl"></div>
         </div>
     </div>
 
-    <div id="adModal" class="modal-overlay fixed inset-0 bg-black/95 hidden z-[3000] flex justify-center items-center">
-        <div class="modal-content bg-purple-900 w-11/12 max-w-md p-8 rounded-2xl text-center border-purple-400">
-            <h3 class="text-2xl font-extrabold mb-4 text-yellow-400">WATCHING AD...</h3>
-            <div class="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin mx-auto mb-6"></div>
-            <p class="text-white text-lg">Reward in: <span id="adTimer" class="font-bold text-pink-400">10</span>s</p>
-            <p class="text-gray-400 text-xs mt-4">Simulating advertisement experience...</p>
+    <div id="devConsole" class="modal-overlay hidden" style="z-index: 3000;">
+        <div class="modal-content w-11/12 max-w-lg" style="border: 4px solid var(--fg-yellow);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-yellow);">Developer Console</h3>
+            
+            <div class="mb-4 text-left p-3 rounded" style="background-color: #374151;">
+                <p class="text-sm text-gray-400 font-asap mb-2">Current Crowns: <span id="consoleKudos" class="text-white font-bold">0</span></p>
+                <p class="text-sm text-gray-400 font-asap">Press <kbd class="px-1 py-0.5 rounded bg-gray-600 text-white">Alt + \</> to toggle.</p>
+            </div>
+
+            <div class="control-group mb-4">
+                <label for="crownsInput" class="block text-white text-sm font-asap mb-2 text-left">Add Crowns (Kudos)</label>
+                <input type="number" id="crownsInput" placeholder="Enter amount (e.g., 1000000)" class="w-full p-2 rounded text-black font-asap" min="1" value="1000000">
+            </div>
+
+            <button id="addCrownsButton" class="cost-btn px-6 py-2 text-white font-bold rounded-md w-full" style="background-color: var(--fg-pink);">
+                Execute: Add Crowns
+            </button>
+            
+            <button id="spawnGiftButton" class="cost-btn px-6 py-2 text-white font-bold rounded-md w-full mt-3" style="background-color: var(--fg-blue);">
+                Execute: Spawn Gift Box
+            </button>
+
         </div>
     </div>
+
+    <div id="leaderboardModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px; border-color: var(--fg-leaderboard);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-leaderboard);">Rebirth Leaderboard</h3>
+            <p class="text-white mb-4 font-asap">
+                Top players by Rebirths. (Please Do NOT Cheat!).
+            </p>
+            
+            <div id="leaderboardListWrapper" class="scrollable-content upgrade-section pr-3 overflow-y-auto text-left" style="max-height: 300px;">
+                <ul id="leaderboardList" class="leaderboard-list">
+                    </ul>
+            </div>
+            
+            <div class="flex justify-center mt-6 gap-4">
+                <button onclick="window.open('https://forms.gle/dZZnHoYrZGUVSHZf8', '_blank')" class="cost-btn px-6 py-2 font-bold rounded-md text-white" style="background-color: var(--fg-leaderboard);">
+                    Submit Score
+                </button>
+                <button id="closeLeaderboardModal" class="cost-btn px-6 py-2 font-bold rounded-md bg-gray-600 text-white">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="adModal" class="modal-overlay hidden" style="z-index: 2500;">
+        <div class="modal-content" style="border-color: var(--fg-yellow);">
+            <h3 class="text-2xl font-extrabold mb-4" style="color:var(--fg-yellow);">Adding Crowns In Progress...</h3>
+            <p class="text-white mb-4 font-asap">
+                Thank you for supporting the game!
+            </p>
+            
+            <div class="text-center my-6">
+                <div class="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin mx-auto"></div>
+                
+                <p class="text-white text-lg mt-4">
+                    Your reward will be granted in:
+                </p>
+                <p id="adTimer" class="text-3xl font-bold" style="color: var(--fg-yellow);">30</p>
+                <p class="text-gray-400 text-sm font-asap">(Please do not close this window)</p>
+            </div>
+
+        </div>
+    </div>
+
 
     <audio id="bgMusic" loop>
-        <source src="https://lambda.vgmtreasurechest.com/soundtracks/fortnite-fall-guys-crown-jam-ps4-ps5-switch-switch-2-windows-xbox-one-xbox-series-xs-gamerip-2026/igvhaffhdh/Gameplay%204.mp3" type="audio/mpeg">
+        <source src="https://nu.vgmtreasurechest.com/soundtracks/fall-guys-complete-soundtrack-gamerip-2020/suuomsdm/1-46.%20Chill%20Your%20Beans.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
     </audio>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-
     <script>
-        // --- 1. GAME CONFIG & STATE ---
-        const CONFIG = {
-            clickThreshold: 90, // ms between clicks
-            blockDuration: 3000,
-            sfxBaseVol: -10,
-            saveKey: 'beanClickerUltSave_v1'
-        };
-
-        let state = {
-            kudos: 0,
-            totalKudos: 0,
-            fameXP: 0,
-            fameLevel: 1,
-            clickPower: 1,
-            passiveRate: 0,
-            multiplier: 1,
-            rebirths: 0,
-            upgrades: {},
-            squads: {},
-            unlockedCosmetics: ['classic_pink'],
-            equippedCosmetic: 'classic_pink',
-            bgIndex: 0
-        };
-
-        // --- 2. DATA STRUCTURES ---
-
-        // Images/Icons
-        const ICONS = {
-            crown: `<img src="https://cdn-icons-png.flaticon.com/256/6941/6941697.png" class="w-4 h-4 inline mx-1 align-text-bottom">`,
-            shard: `<span class="text-purple-400">◆</span>`
-        };
-
-        // Upgrades (Standard)
-        const UPGRADES = {
-            'sneakers': { name: "Grip Sneakers", type: 'click', baseCost: 15, costMult: 1.5, effect: 1, desc: "Better traction means harder punches.", max: 20 },
-            'gloves': { name: "Boxing Gloves", type: 'click', baseCost: 150, costMult: 1.6, effect: 5, desc: "Padded gloves for rapid-fire bean abuse.", max: 15 },
-            'fan': { name: "Big Yeetus", type: 'passive', baseCost: 500, costMult: 2.0, effect: 2, desc: "A rotating hammer that knocks crowns loose.", max: 10 },
-            'slime': { name: "Slime Slide", type: 'passive', baseCost: 2500, costMult: 2.2, effect: 10, desc: "Slippery surfaces generate passive income.", max: 10 },
-            'fruit': { name: "Fruit Cannon", type: 'click', baseCost: 10000, costMult: 2.5, effect: 50, desc: "Shoot giant fruit at the bean.", max: 5 },
-            'rhino': { name: "Mech Rhino", type: 'passive', baseCost: 50000, costMult: 3.0, effect: 100, desc: "A mechanical rhino charges for you.", max: 5 }
-        };
-
-        // Squads (New Tab - Passive Boosters)
-        const SQUADS = {
-            ' rookie': { name: "Rookie Bean", baseCost: 1000, mult: 1.5, effect: 1, desc: "A newbie trying their best. (+1 C/s)", max: 10 },
-            'gladiator': { name: "Golden Knight", baseCost: 50000, mult: 1.8, effect: 25, desc: "A try-hard player carrying the team. (+25 C/s)", max: 5 },
-            'hacker': { name: "Flying Cheater", baseCost: 1000000, mult: 4.0, effect: 500, desc: "Unfair advantage, but profitable. (+500 C/s)", max: 3 }
-        };
-
-        // Cosmetics
-        const COSMETICS = {
-            'classic_pink': { name: "Classic Pink", cost: 0, style: "radial-gradient(circle at 30% 30%, #ff80ab 0%, #e91e63 60%, #880e4f 100%)" },
-            'rookie_blue': { name: "Rookie Blue", cost: 5000, style: "radial-gradient(circle at 30% 30%, #4fc3f7 0%, #039be5 60%, #01579b 100%)" },
-            'minty_fresh': { name: "Minty Fresh", cost: 25000, style: "radial-gradient(circle at 30% 30%, #69f0ae 0%, #00e676 60%, #00c853 100%)" },
-            'hot_dog': { name: "Hot Dog", cost: 100000, style: "radial-gradient(circle at 30% 30%, #ffcc80 0%, #ef6c00 60%, #bf360c 100%)" },
-            'dark_knight': { name: "Dark Knight", cost: 500000, style: "radial-gradient(circle at 30% 30%, #757575 0%, #212121 60%, #000000 100%)" },
-            'golden_witched': { name: "Golden Witch", cost: 2000000, style: "radial-gradient(circle at 30% 30%, #fff9c4 0%, #fbc02d 60%, #f57f17 100%)" },
-            'galaxy': { name: "Galactic", cost: 10000000, style: "linear-gradient(135deg, #311b92, #6200ea, #d500f9)" }
-        };
-
-        // Fame Path (Season Pass Data)
-        const FAME_PATH = [];
-        for(let i=1; i<=100; i++) {
-            FAME_PATH.push({
-                level: i,
-                xpReq: i * 500,
-                rewardType: i % 5 === 0 ? 'cosmetic_shard' : 'crowns',
-                rewardVal: i * 1000
-            });
-        }
-
-        // --- 3. AUDIO SYSTEM (TONE.JS) ---
-        let audioCtx = {
-            click: null,
-            upgrade: null,
-            win: null,
-            fail: null,
-            woos: [],
-            loaded: false
-        };
-
-        function initAudio() {
-            if(audioCtx.loaded) return;
-            try {
-                const vol = new Tone.Volume(CONFIG.sfxBaseVol).toDestination();
-
-                // 1. Bean Bonk (Percussive)
-                audioCtx.click = new Tone.MembraneSynth({
-                    pitchDecay: 0.05,
-                    octaves: 4,
-                    oscillator: { type: "sine" },
-                    envelope: { attack: 0.001, decay: 0.1, sustain: 0.01, release: 0.1 }
-                }).connect(vol);
-
-                // 2. Upgrade (Happy Chime)
-                audioCtx.upgrade = new Tone.PolySynth(Tone.Synth, {
-                    volume: -5,
-                    oscillator: { type: "triangle" },
-                    envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 1 }
-                }).connect(vol);
-
-                // 3. Win/Qualify (Brass-like)
-                audioCtx.win = new Tone.PolySynth(Tone.Synth, {
-                    volume: -2,
-                    oscillator: { type: "sawtooth" },
-                    envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.5 }
-                }).connect(vol);
-                
-                // 4. Fail (Low buzz)
-                audioCtx.fail = new Tone.MonoSynth({
-                    oscillator: { type: "square" },
-                    envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.2 },
-                    filterEnvelope: { attack: 0.001, decay: 0.1, sustain: 0, baseFrequency: 200, octaves: 2 }
-                }).connect(vol);
-
-                // 5. "Woo" Simulator (Formant filter)
-                const wooFilter = new Tone.AutoFilter("4n").start();
-                audioCtx.woo = new Tone.Synth({
-                    oscillator: { type: "triangle" },
-                    envelope: { attack: 0.05, decay: 0.2, sustain: 0.1, release: 0.5 }
-                }).connect(wooFilter).connect(vol);
-
-                audioCtx.loaded = true;
-            } catch(e) { console.error("Audio init failed", e); }
-        }
-
-        function playSound(type) {
-            if(!audioCtx.loaded) return;
-            try {
-                switch(type) {
-                    case 'click': 
-                        audioCtx.click.triggerAttackRelease(Math.random() > 0.5 ? "C2" : "D2", "32n");
-                        // Chance to "Woo"
-                        if(Math.random() < 0.05) audioCtx.woo.triggerAttackRelease(Math.random() > 0.5 ? "C5" : "E5", "8n");
-                        break;
-                    case 'buy': 
-                        audioCtx.upgrade.triggerAttackRelease(["C5", "E5", "G5"], "16n");
-                        break;
-                    case 'qualify':
-                        audioCtx.win.triggerAttackRelease(["C4", "E4", "G4", "C5"], "2n");
-                        break;
-                    case 'fail':
-                        audioCtx.fail.triggerAttackRelease("A1", "8n");
-                        break;
-                    case 'door_hit':
-                        audioCtx.click.triggerAttackRelease("F1", "16n");
-                        break;
-                }
-            } catch(e){}
-        }
-
-        // --- 4. CORE MECHANICS ---
+        // Tone.js library for sound effects and music
+        const TONE_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js";
         
+        // --- GAME VARIABLES & STATE ---
+        let kudos = 0; 
+        let totalKudosEarned = 0; 
+        let clickPower = 1;
+        let passiveRate = 0;
+        let upgrades = {};
+        let isToneLoaded = false;
+        
+        // REBIRTH VARIABLES
+        let rebirthCount = 0;
+        let rebirthMultiplier = 1; 
+        
+        // Rebirth Logic Constants
+        const REBIRTH_MULTIPLIER_BASE = 1.0; 
+        
+        // Console State
+        let isConsoleOpen = false;
+        
+        // COSMETIC VARIABLES
+        let unlockedCosmetics = ['classic_pink']; 
+        let appliedCosmetic = 'classic_pink';
+
+        // Tone.js Components
+        let clickSynth, upgradeSynth, synthFail, titleToggleSynth, rebirthSynth, sfxVolume; 
+
+        // New Crown Image Constant and HTML for display
+        const CROWN_ICON_URL = "https://cdn-icons-png.flaticon.com/256/6941/6941697.png";
+        const CROWN_ICON_HTML = `<img src="${CROWN_ICON_URL}" alt="Crown" class="w-4 h-4 inline ml-1 mr-1" onerror="this.onerror=null; this.src='https://placehold.co/16x16/ffeb3b/1e3a8a?text=C'">`;
+
+        // Background Control Variables
+        const backgroundData = [
+            { name: "EverGreen", url: "https://cdn2.unrealengine.com/fg-10-3-evg-keyart-backgroundonly-1920x1080-1920x1080-cf86998087ba.png" }, 
+            { name: "Bean Hill Zone", url: "https://i.redd.it/3hngyakrrxtc1.png" },  
+            { name: "Winter", url: "https://preview.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-21e67zjnsutc1.png?width=640&crop=smart&auto=webp&s=1989890a425a92aa9bb9616b710681ccc0509e70" }, 
+            { name: "Ocean", url: "https://i.redd.it/fall-guys-background-themes-part-2-perfect-for-your-own-v0-qpvwwxsom1wc1.png?width=1365&format=png&auto=webp&s=36c3665c0296692a05916d37ef867baecd1e6a5d" }, 
+            { name: "Digital", url: "https://i.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-cru9imgfvutc1.png?width=1365&format=png&auto=webp&s=a70e7191c68a8c81637ee4223c14caffc2b07b03" }, 
+			{ name: "Slime Festival", url: "https://i.redd.it/fall-guys-background-themes-perfect-for-your-own-wallpaper-v0-0amz4x39uutc1.png?width=1365&format=png&auto=webp&s=6207b0121ba9638731a0a8ac5b3757756eb76b88" },
+			{ name: "Futuristic", url: "https://preview.redd.it/fall-guys-background-themes-part-2-perfect-for-your-own-v0-1usqwvi1m1wc1.png?width=640&crop=smart&auto=webp&s=c07abcb34ce9f06f58a2bf0f22b9102de28adcab" }
+        ];
+        let currentBgIndex = 0;
+        const bodyElement = document.body;
+
+        // Anti-Cheat Variables 
+        const CLICK_THRESHOLD_MS = 100; 
+        const CLICK_BLOCK_DURATION_MS = 5000;
+        let lastClickTimestamps = [];
+        let isClickingBlocked = false;
+
+        // --- GIFT BOX VARIABLES ---
+        const MIN_GIFT_CROWNS = 1000;
+        const MAX_GIFT_CROWNS = 50000;
+        const MIN_SPAWN_DELAY_S = 25; 
+        const MAX_SPAWN_DELAY_S = 45; 
+        let giftSpawnTimeout; 
+
+        // --- *** NEW: AD SIMULATION VARIABLES *** ---
+        const AD_REWARD = 100000;
+        const AD_DURATION_S = 120; // 30 seconds
+        let isAdPlaying = false;
+        let adTimerInterval;
+
+        // --- *** NEW: LEADERBOARD DATA (EDIT THIS) *** ---
+        const leaderboardData = [
+            { name: "Shark_Attack", rebirths: 500 },
+            { name: "Revs63", rebirths: 420 },
+            { name: "LWT_FG", rebirths: 322 },
+            { name: "JingliaI", rebirths: 141 },
+            { name: "Hussam", rebirths: 33 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 },
+            { name: "???", rebirths: 0 }
+        ];
+        // ---------------------------------------------------
+
+        // Upgrades 
+        const upgradeData = {
+            'wobbly_arms': { name: "Wobbly Arms Training", type: 'click', baseCost: 10, costMultiplier: 1.5, effect: 1, description: "Better core stability for more consistent Crown punches.", level: 0, maxLevel: 10 },
+            'slime_scrapper': { name: "Slime Scraper Drones", type: 'passive', baseCost: 100, costMultiplier: 2.0, effect: 0.1, description: "Automated drones salvage Crowns left on the Slime Climb floor.", level: 0, maxLevel: 10 },
+            'grab_training': { name: "Aggressive Grab Technique", type: 'click', baseCost: 1000, costMultiplier: 1.8, effect: 10, description: "Focus your bean-punching power for a massive click boost.", level: 0, maxLevel: 5 },
+            'fan_boost': { name: "Big Fans Energy", type: 'passive', baseCost: 3000, costMultiplier: 2.5, effect: 1, description: "A constant flow of wind pushes more Crowns toward you every second.", level: 0, maxLevel: 5 },
+        };
+        
+        // Calculate total max levels once
+        const UPGRADE_KEYS = Object.keys(upgradeData);
+        let TOTAL_MAX_LEVELS = 0;
+        for (const key of UPGRADE_KEYS) {
+            TOTAL_MAX_LEVELS += upgradeData[key].maxLevel;
+        }
+        
+        // *** UPDATED COSMETICS DATA ***
+        const cosmeticsData = {
+            'classic_pink': {
+                name: "Classic Pink",
+                cost: 0, // Free!
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #ff6e96 40%, #e91e63 80%, #d81b60 100%)"
+            },
+            'ocean_blue': {
+                name: "Ocean Blue",
+                cost: 100000, // 100k Crowns
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #2196f3 40%, #1e88e5 80%, #1976d2 100%)"
+            },
+            'slime_green': {
+                name: "Slime Green",
+                cost: 500000, // 500k Crowns
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #8bc34a 40%, #689f38 80%, #558b2f 100%)"
+            },
+            'regal_gold': {
+                name: "Regal Gold",
+                cost: 10000000, // 10M Crowns
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #fffde7 0%, #ffeb3b 40%, #fbc02d 80%, #f9a825 100%)"
+            },
+            'sunset_orange': {
+                name: "Sunset Orange",
+                cost: 250000, // 250k
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #ff9800 40%, #f57c00 80%, #e65100 100%)"
+            },
+            'royal_purple': {
+                name: "Royal Purple",
+                cost: 750000, // 750k
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #9c27b0 40%, #7b1fa2 80%, #4a148c 100%)"
+            },
+            'pearl_white': {
+                name: "Pearl White",
+                cost: 5000000, // 5M
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #ffffff 0%, #e0e0e0 40%, #bdbdbd 80%, #9e9e9e 100%)"
+            },
+            'void_black': {
+                name: "Void Black",
+                cost: 5000000, // 5M
+                type: 'static',
+                gradient: "radial-gradient(circle at 35% 35%, #bdbdbd 0%, #616161 40%, #424242 80%, #212121 100%)"
+            },
+            'rainbow_flow': {
+                name: "Rainbow Flow",
+                cost: 50000000, // 50M
+                type: 'static',
+                className: 'cosmetic-rainbow',
+                gradient: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #0000ff, #9400d3)" // For the preview icon
+            },
+            'galaxy_swirl': {
+                name: "Galaxy Swirl",
+                cost: 100000000, // 100M
+                type: 'static',
+                className: 'cosmetic-galaxy',
+                gradient: "linear-gradient(90deg, #0f0c29, #302b63, #24243e)" // For the preview icon
+            },
+            'snowflake_blue': {
+                name: "Snowflake Blue",
+                cost: 250000000, // 250M
+                type: 'static',
+                className: 'cosmetic-snowflake-blue',
+                gradient: "linear-gradient(90deg, #B0E0E6, #FFFFFF)" // For the preview icon
+            }
+        };
+        // **************************
+
+        // --- DOM ELEMENTS ---
+        const aetherCore = document.getElementById('aetherCore');
+        const kudosCountDisplay = document.getElementById('kudosCount');
+        const clickPowerDisplay = document.getElementById('clickPowerDisplay');
+        const passiveRateDisplay = document.getElementById('passiveRateDisplay');
+        const upgradeList = document.getElementById('upgradeList');
+        const sfxVolumeSlider = document.getElementById('sfxVolumeSlider');
+        const bgChangeButton = document.getElementById('bgChangeButton');
+        const blockOverlay = document.getElementById('blockOverlay'); 
+        const countdownDisplay = document.getElementById('countdownDisplay'); 
+        const gameTitle = document.getElementById('gameTitle');
+        const titleToggleButton = document.getElementById('titleToggleButton');
+        const eyeOpenIcon = document.getElementById('eyeOpenIcon');
+        const eyeClosedIcon = document.getElementById('eyeOpenIcon');
+        const titleTextWrapper = document.getElementById('titleTextWrapper');
+        const giftBox = document.getElementById('giftBox'); 
+        const rebirthButton = document.getElementById('rebirthButton'); 
+        const rebirthModal = document.getElementById('rebirthModal'); 
+        const confirmRebirth = document.getElementById('confirmRebirth'); 
+        const cancelRebirth = document.getElementById('cancelRebirth'); 
+        const rebirthDetails = document.getElementById('rebirthDetails'); 
+        const multiplierValueDisplay = document.getElementById('multiplierValue'); 
+
+        // --- BGM ELEMENTS ---
+        const bgMusic = document.getElementById('bgMusic'); 
+        const bgmVolumeSlider = document.getElementById('bgmVolumeSlider');
+
+        // Console Elements
+        const devConsole = document.getElementById('devConsole');
+        const consoleKudosDisplay = document.getElementById('consoleKudos');
+        const crownsInput = document.getElementById('crownsInput');
+        const addCrownsButton = document.getElementById('addCrownsButton');
+        const spawnGiftButton = document.getElementById('spawnGiftButton'); 
+
+        // --- *** NEW DOM ELEMENTS *** ---
+        // Leaderboard
+        const leaderboardButton = document.getElementById('leaderboardButton');
+        const leaderboardModal = document.getElementById('leaderboardModal');
+        const closeLeaderboardModal = document.getElementById('closeLeaderboardModal');
+        const leaderboardList = document.getElementById('leaderboardList');
+        // Simulated Ad
+        const watchAdButton = document.getElementById('watchAdButton');
+        const adModal = document.getElementById('adModal');
+        const adTimer = document.getElementById('adTimer');
+        
+        // --- UTILITY FUNCTIONS ---
+
         function formatNumber(num) {
-            if(num >= 1000000000) return (num/1000000000).toFixed(2) + 'B';
-            if(num >= 1000000) return (num/1000000).toFixed(2) + 'M';
-            if(num >= 1000) return (num/1000).toFixed(1) + 'k';
-            return Math.floor(num).toString();
+            if (num === null || num === undefined) return "0";
+            if (num < 1000) return num.toFixed(0);
+            const suffixes = ["", "K", "M", "B", "T", "Qa", "Qi"];
+            let suffixNum = 0;
+            while (num >= 1000) {
+                num /= 1000;
+                suffixNum++;
+            }
+            return num.toFixed(1) + suffixes[suffixNum];
         }
-
-        function calculateStats() {
-            let clickAdd = 0;
-            let passAdd = 0;
-            
-            // Upgrades
-            for(let k in UPGRADES) {
-                if(UPGRADES[k].type === 'click') clickAdd += (state.upgrades[k] || 0) * UPGRADES[k].effect;
-                if(UPGRADES[k].type === 'passive') passAdd += (state.upgrades[k] || 0) * UPGRADES[k].effect;
-            }
-            
-            // Squads
-            for(let k in SQUADS) {
-                passAdd += (state.squads[k] || 0) * SQUADS[k].effect;
-            }
-
-            state.clickPower = Math.floor((1 + clickAdd) * state.multiplier);
-            state.passiveRate = Math.floor(passAdd * state.multiplier);
-        }
-
-        function updateUI() {
-            document.getElementById('kudosCount').innerHTML = formatNumber(state.kudos);
-            document.getElementById('clickPowerDisplay').innerText = formatNumber(state.clickPower);
-            document.getElementById('passiveRateDisplay').innerText = formatNumber(state.passiveRate);
-            document.getElementById('multiplierValue').innerText = 'x' + state.multiplier.toFixed(2);
-            
-            // Fame
-            document.getElementById('fameLevelDisplay').innerText = `LVL ${state.fameLevel}`;
-            const currentLevelData = FAME_PATH[state.fameLevel - 1];
-            const nextXp = currentLevelData ? currentLevelData.xpReq : 999999999;
-            const progress = Math.min(100, (state.fameXP / nextXp) * 100);
-            document.getElementById('fameBarFill').style.width = `${progress}%`;
-            document.getElementById('fameProgressText').innerText = `${formatNumber(state.fameXP)} / ${formatNumber(nextXp)} XP`;
-            
-            renderShop();
-        }
-
-        // --- 5. INTERACTION & PARTICLES ---
-
-        let clickTimes = [];
-        let isBlocked = false;
-
-        function spawnParticles(x, y, type = 'crown') {
-            const count = 5;
-            for(let i=0; i<count; i++) {
-                const el = document.createElement('div');
-                el.classList.add('particle');
-                el.style.left = x + 'px';
-                el.style.top = y + 'px';
-                
-                // Random drift
-                const angle = Math.random() * Math.PI * 2;
-                const vel = 50 + Math.random() * 50;
-                const tx = Math.cos(angle) * vel;
-                const ty = Math.sin(angle) * vel - 100; // biased up
-                
-                el.style.setProperty('--tx', `${tx}px`);
-                el.style.setProperty('--ty', `${ty}px`);
-                
-                if(type === 'crown') {
-                    el.innerHTML = ICONS.crown; 
-                } else {
-                    el.classList.add('particle-confetti');
-                    el.style.backgroundColor = ['#ff0', '#f0f', '#0ff'][Math.floor(Math.random()*3)];
-                }
-                
-                document.body.appendChild(el);
-                setTimeout(() => el.remove(), 1000);
-            }
-            
-            // Floating Text
-            const text = document.createElement('div');
-            text.classList.add('particle');
-            text.style.left = (x - 20) + 'px';
-            text.style.top = (y - 40) + 'px';
-            text.style.color = '#fff';
-            text.style.fontSize = '24px';
-            text.innerText = `+${formatNumber(state.clickPower)}`;
-            document.body.appendChild(text);
-            setTimeout(() => text.remove(), 800);
-        }
-
-        function clickBean(e) {
-            if(isBlocked) return;
-            
-            // Init audio context on first user interaction
-            if(Tone.context.state !== 'running') Tone.start();
-            initAudio();
-
-            // Anti-Cheat
-            const now = Date.now();
-            clickTimes.push(now);
-            clickTimes = clickTimes.filter(t => now - t < 1000);
-            if(clickTimes.length > 18) { // >18 clicks/sec = humanly impossible
-                 triggerBlock();
-                 return;
-            }
-
-            // Game Logic
-            state.kudos += state.clickPower;
-            state.totalKudos += state.clickPower;
-            state.fameXP += 1; // 1 XP per click
-            
-            checkFameLevelUp();
-            spawnParticles(e.clientX, e.clientY);
-            
-            // Bean Animation
-            const bean = document.getElementById('aetherCore');
-            bean.style.transform = `scale(0.95) rotate(${Math.random()*10 - 5}deg)`;
-            setTimeout(() => bean.style.transform = 'scale(1) rotate(0deg)', 50);
-            
-            playSound('click');
-            updateUI();
-        }
-
-        function triggerBlock() {
-            isBlocked = true;
-            document.getElementById('blockOverlay').classList.remove('hidden');
-            playSound('fail');
-            setTimeout(() => {
-                isBlocked = false;
-                document.getElementById('blockOverlay').classList.add('hidden');
-                clickTimes = [];
-            }, CONFIG.blockDuration);
-        }
-
-        function checkFameLevelUp() {
-            const levelData = FAME_PATH[state.fameLevel - 1];
-            if(!levelData) return;
-            
-            if(state.fameXP >= levelData.xpReq) {
-                state.fameXP -= levelData.xpReq;
-                state.fameLevel++;
-                state.kudos += levelData.rewardVal;
-                
-                // Show Qualified Banner
-                const banner = document.getElementById('qualifiedBanner');
-                banner.style.transform = "translate(-50%, -50%) scale(1)";
-                playSound('qualify');
-                setTimeout(() => {
-                    banner.style.transform = "translate(-50%, -50%) scale(0)";
-                }, 2000);
-            }
-        }
-
-        // --- 6. SHOP LOGIC ---
-        let currentTab = 'upgrades';
-
-        function renderShop() {
-            const container = document.getElementById('shopContent');
-            container.innerHTML = '';
-
-            // 1. UPGRADES TAB
-            if(currentTab === 'upgrades') {
-                for(let key in UPGRADES) {
-                    const u = UPGRADES[key];
-                    const lvl = state.upgrades[key] || 0;
-                    const cost = Math.floor(u.baseCost * Math.pow(u.costMult, lvl));
-                    const isMax = lvl >= u.max;
-                    
-                    const el = document.createElement('div');
-                    el.className = `upgrade-card ${(!isMax && state.kudos < cost) ? 'disabled' : ''}`;
-                    el.innerHTML = `
-                        <div class="flex-1">
-                            <div class="text-lg font-bold text-yellow-300">${u.name} <span class="text-xs text-white">Lvl ${lvl}/${u.max}</span></div>
-                            <div class="text-xs text-gray-300 font-asap">${u.desc}</div>
-                            <div class="text-xs text-cyan-300 font-bold">+${u.effect} ${u.type === 'click' ? 'Click' : 'C/s'}</div>
-                        </div>
-                        <button class="cost-btn ml-2" onclick="buyItem('upgrade', '${key}')">
-                            ${isMax ? 'MAX' : cost + ICONS.crown}
-                        </button>
-                    `;
-                    container.appendChild(el);
-                }
-            } 
-            // 2. SQUADS TAB
-            else if(currentTab === 'squads') {
-                for(let key in SQUADS) {
-                    const s = SQUADS[key];
-                    const count = state.squads[key] || 0;
-                    const cost = Math.floor(s.baseCost * Math.pow(s.mult, count));
-                    const isMax = count >= s.max;
-                    
-                    const el = document.createElement('div');
-                    el.className = `upgrade-card ${(!isMax && state.kudos < cost) ? 'disabled' : ''}`;
-                    el.style.background = 'linear-gradient(90deg, #1e3a8a, #2563eb)';
-                    el.innerHTML = `
-                        <div class="flex-1">
-                            <div class="text-lg font-bold text-pink-300">${s.name} <span class="text-xs text-white">Qty: ${count}</span></div>
-                            <div class="text-xs text-gray-300 font-asap">${s.desc}</div>
-                        </div>
-                        <button class="cost-btn ml-2" onclick="buyItem('squad', '${key}')">
-                             ${isMax ? 'MAX' : cost + ICONS.crown}
-                        </button>
-                    `;
-                    container.appendChild(el);
-                }
-            }
-            // 3. COSMETICS TAB
-            else if(currentTab === 'cosmetics') {
-                for(let key in COSMETICS) {
-                    const c = COSMETICS[key];
-                    const unlocked = state.unlockedCosmetics.includes(key);
-                    const equipped = state.equippedCosmetic === key;
-                    
-                    const el = document.createElement('div');
-                    el.className = `upgrade-card`;
-                    el.style.background = '#2d1b4e';
-                    
-                    let btnHtml = '';
-                    if(equipped) btnHtml = `<span class="text-green-400 font-bold px-4">EQUIPPED</span>`;
-                    else if(unlocked) btnHtml = `<button class="cost-btn bg-blue-500 text-white" onclick="equipCosmetic('${key}')">WEAR</button>`;
-                    else btnHtml = `<button class="cost-btn ${state.kudos < c.cost ? 'opacity-50' : ''}" onclick="buyItem('cosmetic', '${key}')">${formatNumber(c.cost)} ${ICONS.crown}</button>`;
-
-                    el.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full border-2 border-white" style="background: ${c.style}"></div>
-                            <div class="font-bold text-white">${c.name}</div>
-                        </div>
-                        ${btnHtml}
-                    `;
-                    container.appendChild(el);
-                }
-            }
-            // 4. LEADERBOARD TAB (Fake Data)
-            else if(currentTab === 'leaderboard') {
-                const list = document.createElement('ul');
-                list.className = 'w-full text-sm font-asap';
-                const players = [
-                    {n: "Mediatonic_Dev", s: "999B"},
-                    {n: "FallGuy_1234", s: formatNumber(state.totalKudos * 1.5)},
-                    {n: "YOU", s: formatNumber(state.totalKudos), highlight: true},
-                    {n: "Bert_The_Pegwin", s: "4000"},
-                    {n: "SlimeClimber", s: "120"}
-                ];
-                players.sort((a,b) => parseFloat(b.s) - parseFloat(a.s)); // Crude sort
-                
-                players.forEach((p, i) => {
-                    const li = document.createElement('li');
-                    li.className = `flex justify-between p-3 mb-1 rounded ${p.highlight ? 'bg-yellow-600 border border-yellow-300' : 'bg-gray-700'}`;
-                    li.innerHTML = `<span>#${i+1} ${p.n}</span> <span class="text-yellow-300">${p.s}</span>`;
-                    list.appendChild(li);
-                });
-                container.appendChild(list);
-            }
-        }
-
-        function buyItem(category, key) {
-            let cost = 0;
-            
-            if(category === 'upgrade') {
-                const u = UPGRADES[key];
-                const lvl = state.upgrades[key] || 0;
-                if(lvl >= u.max) return;
-                cost = Math.floor(u.baseCost * Math.pow(u.costMult, lvl));
-                
-                if(state.kudos >= cost) {
-                    state.kudos -= cost;
-                    state.upgrades[key] = lvl + 1;
-                    playSound('buy');
-                } else playSound('fail');
-            }
-            else if(category === 'squad') {
-                const s = SQUADS[key];
-                const count = state.squads[key] || 0;
-                if(count >= s.max) return;
-                cost = Math.floor(s.baseCost * Math.pow(s.mult, count));
-                
-                if(state.kudos >= cost) {
-                    state.kudos -= cost;
-                    state.squads[key] = count + 1;
-                    playSound('buy');
-                } else playSound('fail');
-            }
-            else if(category === 'cosmetic') {
-                const c = COSMETICS[key];
-                if(state.kudos >= c.cost) {
-                    state.kudos -= c.cost;
-                    state.unlockedCosmetics.push(key);
-                    state.equippedCosmetic = key;
-                    applyCosmetic(key);
-                    playSound('buy');
-                } else playSound('fail');
-            }
-
-            calculateStats();
-            updateUI();
-            saveGame();
-        }
-
-        function applyCosmetic(key) {
-            const c = COSMETICS[key];
-            if(c) {
-                document.getElementById('aetherCore').style.background = c.style;
-                state.equippedCosmetic = key;
-            }
-        }
-
-        function equipCosmetic(key) {
-            applyCosmetic(key);
-            updateUI();
-            saveGame();
-        }
-
-        // --- 7. MINI GAMES (DOOR DASH) ---
-        let doorDashActive = false;
         
-        function triggerRandomEvent() {
-            if(doorDashActive) return;
-            // 10% chance every check interval
-            if(Math.random() < 0.1) {
-                startDoorDash();
-            }
-        }
+        // --- SAVE/LOAD FUNCTIONS ---
 
-        function startDoorDash() {
-            doorDashActive = true;
-            document.getElementById('roundPopup').style.display = 'block';
-            playSound('qualify'); // Alert sound
-            
-            setTimeout(() => {
-                document.getElementById('roundPopup').style.display = 'none';
-                document.getElementById('doorDashModal').classList.remove('hidden');
-                document.getElementById('doorResult').innerText = "";
-            }, 2000);
-        }
-
-        window.pickDoor = function(index) {
-            const correct = Math.floor(Math.random() * 3);
-            const resDiv = document.getElementById('doorResult');
-            
-            if(index === correct) {
-                resDiv.innerText = "QUALIFIED! x2 Multiplier (30s)";
-                playSound('qualify');
-                // Temporary boost
-                state.multiplier *= 2;
-                setTimeout(() => {
-                     state.multiplier /= 2;
-                     calculateStats();
-                }, 30000);
-            } else {
-                resDiv.innerText = "ELIMINATED! (Bonk)";
-                playSound('door_hit');
-                // Penalty? Nah, just shame.
-            }
-
-            setTimeout(() => {
-                document.getElementById('doorDashModal').classList.add('hidden');
-                doorDashActive = false;
-                calculateStats();
-            }, 1500);
-        }
-
-        // --- 8. REBIRTH SYSTEM ---
-        
-        function checkRebirth() {
-            // Check if all upgrades maxed
-            let ready = true;
-            for(let k in UPGRADES) {
-                if((state.upgrades[k]||0) < UPGRADES[k].max) ready = false;
-            }
-
-            if(ready) {
-                const newMult = state.multiplier + 0.5;
-                document.getElementById('rebirthDetails').innerHTML = `
-                    Current Multiplier: <span class="text-gray-400">x${state.multiplier.toFixed(2)}</span><br>
-                    New Multiplier: <span class="text-green-400">x${newMult.toFixed(2)}</span>
-                `;
-                document.getElementById('rebirthModal').classList.remove('hidden');
-            } else {
-                alert("You must MAX ALL standard upgrades first!");
-            }
-        }
-
-        document.getElementById('confirmRebirth').addEventListener('click', () => {
-             state.multiplier += 0.5;
-             state.rebirths++;
-             state.kudos = 0;
-             state.upgrades = {};
-             state.squads = {};
-             state.clickPower = 1;
-             
-             calculateStats();
-             saveGame();
-             updateUI();
-             document.getElementById('rebirthModal').classList.add('hidden');
-             playSound('qualify');
-        });
-
-        // --- 9. SAVE SYSTEM ---
         function saveGame() {
-            localStorage.setItem(CONFIG.saveKey, JSON.stringify(state));
-        }
-        function loadGame() {
-            const saved = localStorage.getItem(CONFIG.saveKey);
-            if(saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    state = { ...state, ...parsed }; // Merge
-                } catch(e) { console.error("Save Corrupt"); }
-            }
-            applyCosmetic(state.equippedCosmetic);
-            calculateStats();
-            updateUI();
+            const saveObject = {
+                kudos: kudos,
+                totalKudosEarned: totalKudosEarned,
+                upgrades: upgrades,
+                rebirthCount: rebirthCount,
+                rebirthMultiplier: rebirthMultiplier,
+                unlockedCosmetics: unlockedCosmetics,
+                appliedCosmetic: appliedCosmetic
+            };
+            localStorage.setItem('beanClickerSave', JSON.stringify(saveObject));
         }
 
-        // --- 10. EVENTS & INIT ---
+        function loadGame() {
+            const savedData = localStorage.getItem('beanClickerSave');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                kudos = data.kudos || 0;
+                totalKudosEarned = data.totalKudosEarned || 0;
+                rebirthCount = data.rebirthCount || 0;
+                rebirthMultiplier = data.rebirthMultiplier || 1;
+                
+                unlockedCosmetics = data.unlockedCosmetics || ['classic_pink'];
+                appliedCosmetic = data.appliedCosmetic || 'classic_pink';
+                applyCosmeticStyle(appliedCosmetic); // Apply the loaded style
+                
+                const loadedUpgrades = data.upgrades || {};
+                for (const id in upgradeData) {
+                    upgrades[id] = loadedUpgrades[id] !== undefined ? loadedUpgrades[id] : 0;
+                }
+                
+                recalculateStats();
+                updateDisplay();
+                showNotification("Game Loaded!", 1500);
+            } else {
+                for (const id in upgradeData) {
+                    upgrades[id] = 0;
+                }
+                recalculateStats();
+                updateDisplay();
+            }
+        }
+
+        // --- TONE.JS SOUND FX IMPLEMENTATION ---
         
-        document.addEventListener('DOMContentLoaded', () => {
+        function initTone() {
+            if (typeof Tone === 'undefined') {
+                console.error("Tone.js failed to load. Sound effects disabled.");
+                return;
+            }
+            
+            try {
+                sfxVolume = new Tone.Volume(sfxVolumeSlider.value * 0.6 - 60).toDestination();
+                
+                clickSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "square" },
+                    envelope: { attack: 0.001, decay: 0.05, sustain: 0.0, release: 0.1 }
+                }).connect(sfxVolume);
+                
+                upgradeSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle" },
+                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.3 }
+                }).connect(sfxVolume);
+
+                synthFail = new Tone.NoiseSynth({
+                    noise: { type: "pink" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+                }).connect(sfxVolume);
+
+                titleToggleSynth = new Tone.Synth({
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+                }).connect(sfxVolume);
+                
+                 rebirthSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.05,
+                    octaves: 10,
+                    envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1 }
+                }).connect(sfxVolume);
+
+
+                isToneLoaded = true;
+                console.log("Audio synths loaded successfully.");
+
+            } catch (e) {
+                console.error("Error initializing Tone.js components:", e);
+                isToneLoaded = false;
+                sfxVolume = { volume: { value: 0 } };
+                clickSynth = { triggerAttackRelease: (f, d) => {} };
+                upgradeSynth = { triggerAttackRelease: (f, d) => {} };
+                synthFail = { triggerAttackRelease: (f, d) => {} };
+                titleToggleSynth = { triggerAttackRelease: (f, d) => {} };
+                rebirthSynth = { triggerAttackRelease: (f, d) => {} };
+            }
+        }
+
+        function setSfxVolume(value) { 
+            if (sfxVolume) {
+                const db = value == 0 ? -100 : value * 0.6 - 60;
+                sfxVolume.volume.value = db;
+            }
+        }
+
+        // --- BGM VOLUME FUNCTION ---
+        function setBgmVolume(value) {
+            if (bgMusic) {
+                bgMusic.volume = value / 100;
+            }
+        }
+
+        // --- NOTIFICATION SYSTEM ---
+        function showNotification(message, durationMs = 3000) {
+            document.querySelectorAll('.notification-box').forEach(el => el.remove());
+
+            const box = document.createElement('div');
+            box.classList.add('notification-box', 'animate-pulse'); 
+            box.innerHTML = `<p class="text-sm md:text-base">${message}</p>`;
+            document.body.appendChild(box);
+
+            setTimeout(() => {
+                box.classList.add('fade-out');
+                setTimeout(() => box.remove(), 500); 
+            }, durationMs);
+        }
+
+        // --- BACKGROUND CHANGER LOGIC ---
+        function cycleBackground() {
+            currentBgIndex = (currentBgIndex + 1) % backgroundData.length;
+            const newBg = backgroundData[currentBgIndex];
+            bodyElement.style.backgroundImage = `url('${newBg.url}')`;
+            showNotification(`Changed Background To ${newBg.name} Successfully!`, 3000);
+        }
+
+        // --- TITLE TOGGLE FIX ---
+        function toggleTitleVisibility() {
+            titleTextWrapper.classList.toggle('title-text-collapsed');
+            const isNowHidden = titleTextWrapper.classList.contains('title-text-collapsed');
+
+            if (isNowHidden) {
+                eyeOpenIcon.classList.add('hidden');
+                eyeClosedIcon.classList.remove('hidden');
+                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("C4", "8n"); 
+            } else {
+                eyeOpenIcon.classList.remove('hidden');
+                eyeClosedIcon.add('hidden');
+                if (isToneLoaded) titleToggleSynth.triggerAttackRelease("G4", "8n"); 
+            }
+        }
+
+        // --- ANTI-CHEATING LOGIC ---
+        function handleAutoclickerDetection() { 
+            const now = performance.now();
+            lastClickTimestamps.push(now);
+            lastClickTimestamps = lastClickTimestamps.filter(timestamp => now - timestamp < 1000);
+
+            const clickCount = lastClickTimestamps.length;
+            if (clickCount > (1000 / CLICK_THRESHOLD_MS) + 1) { 
+                if (!isClickingBlocked) {
+                    isClickingBlocked = true;
+                    blockOverlay.classList.remove('hidden');
+                    
+                    if (isToneLoaded) {
+                        try {
+                            synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
+                        } catch (e) { console.error("Tone error on blocked click:", e); }
+                    }
+
+                    let timeLeft = CLICK_BLOCK_DURATION_MS / 1000;
+                    countdownDisplay.textContent = `${timeLeft.toFixed(1)}s`;
+                    
+                    const blockInterval = setInterval(() => {
+                        timeLeft -= 0.1;
+                        countdownDisplay.textContent = `${timeLeft.toFixed(1)}s`;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(blockInterval);
+                            isClickingBlocked = false;
+                            lastClickTimestamps = []; 
+                            blockOverlay.classList.add('hidden');
+                        }
+                    }, 100);
+                }
+            }
+        }
+
+        // --- GIFT BOX LOGIC ---
+
+        function scheduleNextGiftSpawn() {
+            clearTimeout(giftSpawnTimeout);
+            const delayMs = Math.random() * (MAX_SPAWN_DELAY_S - MIN_SPAWN_DELAY_S) * 1000 + MIN_SPAWN_DELAY_S * 1000;
+            giftSpawnTimeout = setTimeout(spawnGiftBox, delayMs);
+        }
+
+        function spawnGiftBox() {
+            if (giftBox.style.opacity === '1') {
+                scheduleNextGiftSpawn(); 
+                return;
+            }
+            
+            const container = document.querySelector('.core-section');
+            if (!container.clientWidth || !container.clientHeight) {
+                scheduleNextGiftSpawn(); 
+                return;
+            }
+
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            const boxSize = 50; 
+            const padding = 20;
+
+            const randomX = Math.random() * (containerWidth - boxSize - 2 * padding) + padding;
+            const randomY = Math.random() * (containerHeight - boxSize - 2 * padding) + padding;
+
+            giftBox.style.left = `${randomX}px`;
+            giftBox.style.top = `${randomY}px`;
+            giftBox.style.display = 'block';
+            setTimeout(() => { giftBox.style.opacity = '1'; }, 50); 
+
+            scheduleNextGiftSpawn();
+            
+            if (isToneLoaded) {
+                try {
+                    clickSynth.triggerAttackRelease(["A5", "C6"], "16n", Tone.now());
+                    clickSynth.triggerAttackRelease(["D6"], "16n", Tone.now() + 0.1);
+                } catch (e) { console.error("Tone error on gift spawn:", e); }
+            }
+        }
+
+        function collectGift() {
+            if (giftBox.style.opacity !== '1') return;
+
+            giftBox.style.opacity = '0';
+            setTimeout(() => { giftBox.style.display = 'none'; }, 300); 
+
+            const randomCrowns = Math.floor(Math.random() * (MAX_GIFT_CROWNS - MIN_GIFT_CROWNS + 1)) + MIN_GIFT_CROWNS;
+            
+            kudos += randomCrowns;
+            totalKudosEarned += randomCrowns; 
+            updateDisplay();
+            saveGame(); 
+
+            showNotification(` MEGA BONUS! 🎁 +${formatNumber(randomCrowns)} Crowns collected!`, 4000);
+
+            if (isToneLoaded) {
+                try {
+                    upgradeSynth.triggerAttackRelease(["C6", "E6", "G6"], "4n"); 
+                } catch (e) { console.error("Tone error on gift collect:", e); }
+            }
+        }
+
+        // --- *** NEW: SIMULATED AD LOGIC *** ---
+        function startAdSimulation() {
+            if (isAdPlaying) return;
+
+            isAdPlaying = false;
+            watchAdButton.disabled = true;
+            watchAdButton.textContent = "Just Wait...";
+            watchAdButton.style.opacity = '0.6';
+
+            adModal.classList.remove('hidden');
+            
+            let timeLeft = AD_DURATION_S;
+            adTimer.textContent = timeLeft;
+
+            adTimerInterval = setInterval(() => {
+                timeLeft--;
+                adTimer.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(adTimerInterval);
+                    
+                    // Grant Reward
+                    kudos += AD_REWARD;
+                    totalKudosEarned += AD_REWARD;
+                    updateDisplay();
+                    saveGame();
+                    
+                    // Play sound
+                    if (isToneLoaded) {
+                        try {
+                            upgradeSynth.triggerAttackRelease(["C5", "E5", "G5"], "4n"); 
+                        } catch (e) { console.error("Tone error on ad reward:", e); }
+                    }
+
+                    // Reset UI
+                    adModal.classList.add('hidden');
+                    isAdPlaying = false;
+                    watchAdButton.disabled = false;
+                    watchAdButton.textContent = "Get 100k Crowns";
+                    watchAdButton.style.opacity = '1';
+
+                    showNotification(`+${formatNumber(AD_REWARD)} Crowns for watching!`, 3000);
+                }
+            }, 1000);
+        }
+
+        // --- *** NEW: LEADERBOARD LOGIC *** ---
+        function openLeaderboardModal() {
+            leaderboardList.innerHTML = ''; // Clear previous list
+
+            // Sort data by rebirths descending
+            const sortedData = [...leaderboardData].sort((a, b) => b.rebirths - a.rebirths);
+
+            sortedData.forEach((player, index) => {
+                const li = document.createElement('li');
+                
+                let rankDisplay;
+                if (index === 0) {
+                    rankDisplay = '🥇'; // Gold
+                } else if (index === 1) {
+                    rankDisplay = '🥈'; // Silver
+                } else if (index === 2) {
+                    rankDisplay = '🥉'; // Bronze
+                } else {
+                    rankDisplay = `#${index + 1}`;
+                }
+
+                li.innerHTML = `
+                    <span class="rank">${rankDisplay}</span>
+                    <span class="name">${player.name}</span>
+                    <span class="score">${formatNumber(player.rebirths)} Rebirths</span>
+                `;
+                leaderboardList.appendChild(li);
+            });
+
+            leaderboardModal.classList.remove('hidden');
+        }
+
+
+        // --- GAME LOGIC FUNCTIONS ---
+
+        function createClickText(amount) {
+            const finalAmount = amount; 
+
+            const text = document.createElement('div');
+            text.innerHTML = `+${formatNumber(finalAmount)} ${CROWN_ICON_HTML}`; 
+            text.classList.add('absolute', 'text-xl', 'font-bold', 'pointer-events-none', 'animate-pulse', 'flex', 'items-center');
+            text.style.color = '#fff'; 
+            
+            const coreRect = aetherCore.getBoundingClientRect();
+            const startX = coreRect.left + coreRect.width / 2;
+            const startY = coreRect.top + coreRect.height / 2;
+            
+            const offsetX = (Math.random() - 0.5) * 50;
+            const offsetY = (Math.random() - 0.5) * 50;
+
+            text.style.left = `${startX + offsetX}px`;
+            text.style.top = `${startY + offsetY}px`;
+            text.style.transition = 'all 1s ease-out';
+            text.style.opacity = '1';
+
+            document.body.appendChild(text);
+
+            setTimeout(() => {
+                text.style.transform = `translateY(-50px)`;
+                text.style.opacity = '0';
+            }, 10); 
+
+            setTimeout(() => {
+                text.remove();
+            }, 1000); 
+
+            return finalAmount;
+        }
+
+        function harvestAether() {
+            if (isClickingBlocked) return; 
+            
+            handleAutoclickerDetection();
+
+            if (isToneLoaded) {
+                try {
+                    clickSynth.triggerAttackRelease("C5", "32n");
+                } catch (e) { console.error("Tone error on click:", e); }
+            }
+
+            const effectiveAmount = clickPower; 
+            kudos += effectiveAmount; 
+            totalKudosEarned += effectiveAmount; 
+            
+            createClickText(effectiveAmount); 
+            updateDisplay();
+        }
+
+        function calculateCost(upgradeId, level) {
+            const data = upgradeData[upgradeId];
+            return Math.floor(data.baseCost * Math.pow(data.costMultiplier, level));
+        }
+
+        function buyUpgrade(upgradeId) {
+            const data = upgradeData[upgradeId];
+            const currentLevel = upgrades[upgradeId];
+            
+            if (currentLevel >= data.maxLevel) {
+                showNotification(`${data.name} is already at Max Level (${data.maxLevel})!`, 2000);
+                return;
+            }
+
+            const cost = calculateCost(upgradeId, currentLevel);
+
+            if (kudos >= cost) {
+                kudos -= cost; 
+                upgrades[upgradeId]++;
+
+                if (isToneLoaded) {
+                    try {
+                        upgradeSynth.triggerAttackRelease(["G4", "C5", "E5"], "4n");
+                    } catch (e) { console.error("Tone error on upgrade:", e); }
+                }
+
+                recalculateStats();
+                updateDisplay();
+                saveGame(); 
+            } else {
+                if (isToneLoaded) {
+                    try {
+                        synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
+                    } catch (e) { console.error("Tone error on fail:", e); }
+                }
+                showNotification(`Not enough Crowns to purchase ${data.name}!`, 2000);
+            }
+        }
+        
+        // --- REBIRTH LOGIC ---
+        
+        function countTotalUpgradeLevels() {
+            let total = 0;
+            for (const id in upgrades) {
+                total += upgrades[id];
+            }
+            return total;
+        }
+
+        function checkRebirthCondition() {
+            for (const id in upgradeData) {
+                if (upgrades[id] < upgradeData[id].maxLevel) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function calculateRebirthBonus() {
+            const nextRebirthMultiplier = 1 + (REBIRTH_MULTIPLIER_BASE * (rebirthCount + 1));
+            const multiplierIncrease = nextRebirthMultiplier - rebirthMultiplier;
+
+            return {
+                nextRebirthMultiplier: parseFloat(nextRebirthMultiplier.toFixed(3)),
+                multiplierIncrease: parseFloat(multiplierIncrease.toFixed(3))
+            };
+        }
+        
+        function showRebirthModal() {
+            const isConditionMet = checkRebirthCondition();
+            
+            if (!isConditionMet) {
+                const totalCurrentLevels = countTotalUpgradeLevels();
+                const remainingLevels = TOTAL_MAX_LEVELS - totalCurrentLevels;
+                showNotification(`You must purchase all upgrades to max level. ${remainingLevels} levels remaining!`, 4000);
+                return;
+            }
+
+            const { nextRebirthMultiplier, multiplierIncrease } = calculateRebirthBonus();
+            
+            rebirthDetails.innerHTML = `
+                <p>Rebirth Count: **#${rebirthCount}**</p>
+                <p>Current Multiplier: **x${rebirthMultiplier.toFixed(3)}**</p>
+                <p class="mt-2 mb-2">After reset, your new permanent multiplier will be:</p>
+                <p class="text-xl font-extrabold" style="color:var(--fg-rebirth);">
+                    **x${nextRebirthMultiplier.toFixed(3)}**
+                </p>
+                <p class="mt-1 text-sm text-gray-400">
+                    (A permanent **+${(multiplierIncrease * 100).toFixed(1)}%** boost to Click Power)
+                </p>
+            `;
+            
+            rebirthModal.classList.remove('hidden');
+        }
+        
+        function performRebirth() {
+            if (!checkRebirthCondition()) {
+                showNotification("Rebirth failed: Not all upgrades are maxed out!", 3000);
+                rebirthModal.classList.add('hidden');
+                return;
+            }
+            
+            const { nextRebirthMultiplier } = calculateRebirthBonus();
+            
+            rebirthMultiplier = nextRebirthMultiplier;
+            rebirthCount++;
+            kudos = 0;
+            
+            for (const id in upgradeData) {
+                upgrades[id] = 0;
+            }
+            
+            recalculateStats();
+            updateDisplay();
+            saveGame();
+            
+            if (isToneLoaded) {
+                 try {
+                     rebirthSynth.triggerAttackRelease("C2", "2n");
+                     rebirthSynth.triggerAttackRelease("G2", "2n", Tone.now() + 0.1);
+                 } catch (e) { console.error("Tone error on rebirth:", e); }
+            }
+            rebirthModal.classList.add('hidden');
+            showNotification(`CORE RESET SUCCESS! Rebirth #${rebirthCount}. New Multiplier: x${rebirthMultiplier.toFixed(3)}`, 5000);
+        }
+        
+        // --- UPDATED COSMETIC SHOP FUNCTIONS ---
+
+        function applyCosmeticStyle(cosmeticId) {
+            if (!cosmeticsData[cosmeticId]) return; // Safety check
+            const cosmetic = cosmeticsData[cosmeticId];
+
+            // --- 1. RESET ALL STYLES ---
+            Object.values(cosmeticsData).forEach(c => {
+                if (c.type === 'animated' && c.className) {
+                    aetherCore.classList.remove(c.className);
+                }
+            });
+            aetherCore.style.background = ''; 
+            
+            // --- 2. APPLY NEW STYLES ---
+            if (cosmetic.type === 'animated') {
+                aetherCore.classList.add(cosmetic.className);
+            } else {
+                aetherCore.style.background = cosmetic.gradient;
+            }
+        }
+
+        function openCosmeticsModal() {
+            const listElement = document.getElementById('cosmeticList');
+            listElement.innerHTML = ''; 
+
+            for (const id in cosmeticsData) {
+                const cosmetic = cosmeticsData[id];
+                const isUnlocked = unlockedCosmetics.includes(id);
+                const isEquipped = (appliedCosmetic === id);
+                
+                const card = document.createElement('div');
+                card.classList.add('upgrade-card', 'flex', 'justify-between', 'items-center', 'mb-3');
+                card.style.borderColor = 'var(--fg-pink)';
+                
+                let buttonHtml = '';
+                if (isEquipped) {
+                    buttonHtml = `<span class="cost-btn px-4 py-2 text-sm bg-gray-600 cursor-default">Equipped</span>`;
+                } else if (isUnlocked) {
+                    buttonHtml = `<button class="cost-btn px-4 py-2 text-sm" style="background-color: var(--fg-blue);" onclick="equipCosmetic('${id}')">Equip</button>`;
+                } else {
+                    const canAfford = kudos >= cosmetic.cost;
+                    buttonHtml = `
+                        <button class="cost-btn px-4 py-2 text-sm flex items-center" 
+                                style="background-color: ${canAfford ? 'var(--fg-pink)' : '#a0a0a0'};" 
+                                onclick="buyCosmetic('${id}')" ${!canAfford ? 'disabled' : ''}>
+                            ${formatNumber(cosmetic.cost)} ${CROWN_ICON_HTML}
+                        </button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full mr-4 border-2 border-white" style="background: ${cosmetic.gradient};"></div>
+                        <div class="flex-1">
+                            <div class="text-lg font-bold" style="color: var(--fg-yellow);">${cosmetic.name}</div>
+                        </div>
+                    </div>
+                    ${buttonHtml}
+                `;
+                listElement.appendChild(card);
+            }
+            
+            document.getElementById('cosmeticsModal').classList.remove('hidden');
+        }
+
+        function buyCosmetic(cosmeticId) {
+            const cosmetic = cosmeticsData[cosmeticId];
+            if (unlockedCosmetics.includes(cosmeticId)) return; 
+
+            if (kudos >= cosmetic.cost) {
+                kudos -= cosmetic.cost;
+                unlockedCosmetics.push(cosmeticId);
+                
+                showNotification(`Unlocked: ${cosmetic.name}!`, 3000);
+                if (isToneLoaded) upgradeSynth.triggerAttackRelease(["G4", "C5", "E5"], "4n");
+                
+                openCosmeticsModal();
+                updateDisplay(); 
+                saveGame();
+            } else {
+                showNotification("Not enough Crowns!", 2000);
+                if (isToneLoaded) synthFail.triggerAttackRelease("16n", Tone.now(), 0.5);
+            }
+        }
+
+        function equipCosmetic(cosmeticId) {
+            if (!unlockedCosmetics.includes(cosmeticId)) return; 
+
+            appliedCosmetic = cosmeticId;
+            applyCosmeticStyle(cosmeticId);
+            
+            openCosmeticsModal();
+            saveGame();
+        }
+        
+        // --- End of Cosmetic Functions ---
+
+        function recalculateStats() {
+            let baseClickPower = 1;
+            passiveRate = 0; 
+
+            for (const id in upgradeData) {
+                const data = upgradeData[id];
+                const level = upgrades[id];
+
+                if (data.type === 'click') {
+                    baseClickPower += data.effect * level;
+                } else if (data.type === 'passive') {
+                    passiveRate += data.effect * level;
+                }
+            }
+            
+            clickPower = Math.round(baseClickPower * rebirthMultiplier);
+        }
+
+        function updateRebirthButtonState() {
+            const isReady = checkRebirthCondition();
+            const button = document.getElementById('rebirthButton');
+            const totalCurrentLevels = countTotalUpgradeLevels();
+            const remainingLevels = TOTAL_MAX_LEVELS - totalCurrentLevels;
+
+            if (isReady) {
+                button.style.backgroundColor = 'var(--fg-rebirth)';
+                button.style.color = 'black';
+                button.style.boxShadow = '0 0 15px var(--fg-rebirth)';
+                button.textContent = "REBIRTH NOW! (READY!)"; 
+            } else {
+                button.style.backgroundColor = 'rgb(75 85 99)'; 
+                button.style.color = 'white';
+                button.style.boxShadow = 'none';
+                button.textContent = `MAX ALL UPGRADES (${remainingLevels} remaining)`;
+            }
+        }
+
+
+        function updateDisplay() {
+            kudosCountDisplay.textContent = formatNumber(Math.floor(kudos)); 
+            clickPowerDisplay.textContent = formatNumber(clickPower);
+            passiveRateDisplay.textContent = formatNumber(passiveRate); 
+            multiplierValueDisplay.textContent = `x${rebirthMultiplier.toFixed(3)}`; 
+
+            renderUpgradeCards();
+            updateRebirthButtonState(); 
+            
+            if (isConsoleOpen) {
+                consoleKudosDisplay.textContent = formatNumber(Math.floor(kudos));
+            }
+        }
+
+        function renderUpgradeCards() {
+            upgradeList.innerHTML = '';
+            for (const id in upgradeData) {
+                const data = upgradeData[id];
+                const level = upgrades[id];
+                const isMaxLevel = level >= data.maxLevel;
+                const cost = isMaxLevel ? "MAX" : calculateCost(id, level);
+                const canAfford = !isMaxLevel && kudos >= calculateCost(id, level); 
+
+                const card = document.createElement('div');
+                card.classList.add('upgrade-card', 'flex', 'justify-between', 'items-center');
+                if (!canAfford) {
+                    card.classList.add('disabled');
+                }
+
+                const cardColor = data.type === 'click' ? 'var(--fg-blue)' : 'var(--fg-pink)';
+                const btnColor = data.type === 'click' ? 'var(--fg-pink)' : 'var(--fg-yellow)';
+                const btnTextColor = data.type === 'click' ? 'white' : 'var(--bg-dark)';
+                const levelText = isMaxLevel ? 'MAX' : `Lv. ${level}/${data.maxLevel}`;
+                const effectUnit = data.type === 'click' ? 'Click' : 'C/s';
+
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-lg font-bold flex items-center" style="color: ${cardColor};">
+                            ${data.name} <span class="ml-2 text-xs font-normal text-white font-asap">(${levelText})</span>
+                        </div>
+                        <p class="upgrade-description mt-1">${data.description}</p>
+                        <p class="text-sm mt-1 font-asap" style="color: ${cardColor};">
+                            Effect: +${data.effect} ${effectUnit}
+                        </p>
+                    </div>
+                    <button id="btn-${id}" class="cost-btn ml-4 flex flex-col items-center justify-center text-sm" 
+                            style="background-color: ${btnColor}; color: ${btnTextColor};" 
+                            ${!isMaxLevel && !canAfford ? 'disabled' : ''}>
+                        ${isMaxLevel ? `<span>MAXED</span>` : `<span class="flex items-center">${formatNumber(cost)} ${CROWN_ICON_HTML}</span>`}
+                    </button>
+                `;
+
+                if (!isMaxLevel) {
+                    card.addEventListener('click', () => {
+                        buyUpgrade(id);
+                    });
+                } else {
+                    card.classList.add('cursor-default');
+                }
+
+                upgradeList.appendChild(card);
+            }
+        }
+        
+        // --- CONSOLE LOGIC ---
+        
+        function toggleDevConsole() {
+            isConsoleOpen = !isConsoleOpen;
+            if (isConsoleOpen) {
+                consoleKudosDisplay.textContent = formatNumber(Math.floor(kudos));
+                devConsole.classList.remove('hidden');
+                crownsInput.focus(); 
+            } else {
+                devConsole.classList.add('hidden');
+            }
+        }
+        
+        function addKudosCheat() {
+            const amount = parseInt(crownsInput.value);
+
+            if (isNaN(amount) || amount <= 0) {
+                showNotification("Please enter a valid amount greater than 0.", 2000);
+                return;
+            }
+
+            const maxSafeInteger = 9007199254740991; 
+            
+            if (kudos + amount > maxSafeInteger) {
+                kudos = maxSafeInteger;
+                totalKudosEarned = maxSafeInteger; 
+                showNotification(`Crowns set to MAX SAFE VALUE (${formatNumber(maxSafeInteger)})!`, 3000);
+            } else {
+                kudos += amount;
+                totalKudosEarned += amount;
+                showNotification(`Cheat Activated! +${formatNumber(amount)} Crowns added.`, 3000);
+            }
+            
+            updateDisplay();
+            saveGame();
+            toggleDevConsole(); 
+            
+            if (isToneLoaded) {
+                try {
+                    upgradeSynth.triggerAttackRelease(["C5", "E5", "G5"], "4n"); 
+                } catch (e) { console.error("Tone error on cheat:", e); }
+            }
+        }
+
+
+        // --- GAME LOOPS & INITIALIZATION ---
+
+        function passiveLoop() {
+            if (passiveRate > 0) {
+                const earned = passiveRate / 10;
+                kudos += earned; 
+                totalKudosEarned += earned; 
+                updateDisplay();
+            }
+        }
+        
+        function saveLoop() {
+             saveGame();
+        }
+
+        function init() {
             loadGame();
 
-            // Clicker
-            document.getElementById('aetherCore').addEventListener('mousedown', clickBean);
-            
-            // Tabs
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentTab = e.target.getAttribute('data-tab');
-                    renderShop();
-                });
+            const script = document.createElement('script');
+            script.src = TONE_JS_URL;
+            document.head.appendChild(script);
+
+            aetherCore.addEventListener('click', () => {
+                if (!isToneLoaded && typeof Tone !== 'undefined') {
+                    initTone();
+                }
+                
+                if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+
+                if (bgMusic && bgMusic.paused) {
+                    bgMusic.play().catch(e => console.warn("Background music autoplay prevented:", e));
+                }
+                
+                harvestAether();
             });
 
-            // Rebirth
-            document.getElementById('rebirthButton').addEventListener('click', checkRebirth);
-            document.getElementById('cancelRebirth').addEventListener('click', () => document.getElementById('rebirthModal').classList.add('hidden'));
+            giftBox.addEventListener('click', collectGift);
+            bgChangeButton.addEventListener('click', cycleBackground); 
+            titleToggleButton.addEventListener('click', toggleTitleVisibility);
+            sfxVolumeSlider.addEventListener('input', (e) => setSfxVolume(e.target.value));
+            bgmVolumeSlider.addEventListener('input', (e) => setBgmVolume(e.target.value));
+            setBgmVolume(bgmVolumeSlider.value);
 
-            // Ads
-            document.getElementById('watchAdButton').addEventListener('click', () => {
-                document.getElementById('adModal').classList.remove('hidden');
-                let t = 10;
-                const timer = setInterval(() => {
-                    t--;
-                    document.getElementById('adTimer').innerText = t;
-                    if(t<=0) {
-                        clearInterval(timer);
-                        document.getElementById('adModal').classList.add('hidden');
-                        state.kudos += 5000 * state.multiplier;
-                        playSound('upgrade');
-                        updateUI();
+            // Rebirth Listeners
+            rebirthButton.addEventListener('click', showRebirthModal);
+            confirmRebirth.addEventListener('click', performRebirth);
+            cancelRebirth.addEventListener('click', () => rebirthModal.classList.add('hidden'));
+
+            // Cosmetic Listeners
+            const cosmeticsModal = document.getElementById('cosmeticsModal');
+            const cosmeticsButton = document.getElementById('cosmeticsButton');
+            const closeCosmeticsModal = document.getElementById('closeCosmeticsModal');
+            cosmeticsButton.addEventListener('click', openCosmeticsModal);
+            closeCosmeticsModal.addEventListener('click', () => cosmeticsModal.classList.add('hidden'));
+
+            // --- *** NEW EVENT LISTENERS *** ---
+            // Leaderboard
+            leaderboardButton.addEventListener('click', openLeaderboardModal);
+            closeLeaderboardModal.addEventListener('click', () => leaderboardModal.classList.add('hidden'));
+            // Simulated Ad
+            watchAdButton.addEventListener('click', startAdSimulation);
+            // --- *************************** ---
+
+            // Console Listeners
+            addCrownsButton.addEventListener('click', addKudosCheat);
+            spawnGiftButton.addEventListener('click', () => {
+                spawnGiftBox();
+                toggleDevConsole();
+                showNotification("🎁 Gift Box Spawned via Console!", 2000);
+            });
+            crownsInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    addCrownsButton.click();
+                }
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.altKey) { // Note: I'm keeping your original (but likely incorrect 'DISABLEDaltKey') logic. If you meant Alt + \, change this.
+                    event.preventDefault(); 
+                    if (rebirthModal.classList.contains('hidden')) {
+                        toggleDevConsole();
                     }
-                }, 1000);
-            });
-
-            // Settings
-            document.getElementById('settingsBtn').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('hidden'));
-            document.getElementById('closeSettings').addEventListener('click', () => document.getElementById('settingsModal').classList.add('hidden'));
-            
-            document.getElementById('bgmVolumeSlider').addEventListener('input', (e) => {
-                document.getElementById('bgMusic').volume = e.target.value / 100;
-                if(document.getElementById('bgMusic').paused) document.getElementById('bgMusic').play();
-            });
-
-            // Gift Box (Legacy code adapted)
-            const giftBox = document.getElementById('giftBox');
-            giftBox.addEventListener('click', (e) => {
-                e.stopPropagation();
-                giftBox.style.display = 'none';
-                state.kudos += 5000 * state.multiplier;
-                spawnParticles(e.clientX, e.clientY);
-                playSound('upgrade');
-                updateUI();
-            });
-
-            // Random Loops
-            setInterval(() => {
-                // Passive Income
-                if(state.passiveRate > 0) {
-                    state.kudos += state.passiveRate / 10;
-                    state.totalKudos += state.passiveRate / 10;
-                    updateUI();
                 }
-            }, 100);
+            });
 
-            setInterval(() => {
-                // Auto Save
-                saveGame();
-            }, 5000);
-
-            setInterval(() => {
-                // Spawn Gift
-                if(Math.random() < 0.3) {
-                    const rect = document.querySelector('.core-section').getBoundingClientRect();
-                    giftBox.style.left = (Math.random() * (rect.width - 60)) + 'px';
-                    giftBox.style.top = (Math.random() * (rect.height - 60)) + 'px';
-                    giftBox.style.display = 'block';
-                    giftBox.style.opacity = 1;
-                    setTimeout(() => giftBox.style.display = 'none', 5000);
-                }
-                // Trigger Mini Game Check
-                triggerRandomEvent();
-            }, 15000);
             
-            // Console Cheat
-            document.addEventListener('keydown', (e) => {
-                if(e.key === '\\') document.getElementById('devConsole').classList.toggle('hidden');
+            // --- *** NEW: Anti-Debug & Right-Click Block *** ---
+            
+            // 1. Block Right-Click (Context Menu)
+            document.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                // We can use the existing showNotification function
+                showNotification("Right-clicking is disabled.", 2000);
             });
-            document.getElementById('addCrownsButton').addEventListener('click', () => {
-                const amt = parseInt(document.getElementById('crownsInput').value);
-                if(amt) { state.kudos += amt; updateUI(); }
-            });
-            document.getElementById('spawnGiftButton').addEventListener('click', () => {
-                giftBox.style.display = 'block'; giftBox.style.opacity=1;
-            });
-        });
 
+            // 2. Block Dev Tools Keyboard Shortcuts
+            document.addEventListener('keydown', (event) => {
+                let showBlockNotif = false;
+                
+                // Block F12
+                if (event.key === 'F12') {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                // Block Ctrl+Shift+I (Windows/Linux)
+                if (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'i')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                // Block Cmd+Option+I (Mac)
+                if (event.metaKey && event.altKey && (event.key === 'I' || event.key === 'i')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                // Block Ctrl+Shift+C (Inspect Element shortcut)
+                if (event.ctrlKey && event.shiftKey && (event.key === 'C' || event.key === 'c')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                 // Block Ctrl+Shift+J (Console shortcut)
+                if (event.ctrlKey && event.shiftKey && (event.key === 'J' || event.key === 'j')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                 // Block Ctrl+U (View Source)
+                if (event.ctrlKey && (event.key === 'U' || event.key === 'u')) {
+                    event.preventDefault();
+                    showBlockNotif = true;
+                }
+                
+                if (showBlockNotif) {
+                     showNotification("This action is disabled.", 2000);
+                }
+            });
+            // --- *** End of Anti-Debug Script *** ---
+
+
+            setInterval(passiveLoop, 100);
+            setInterval(saveLoop, 5000);
+            scheduleNextGiftSpawn(); 
+            updateDisplay();
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
